@@ -50,5 +50,6 @@ $string['notlte'] = " not less than or equal to ";
 $string['eq'] = " equal to ";
 $string['neq'] = " not equal to ";
 $string['neq'] = " not not equal to ";
+$string['gradeitem_out_of'] = 'out of {$a}';
 
 

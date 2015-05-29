@@ -59,7 +59,10 @@ class engagementindicator_gradebook_thresholds_form {
 				$gradeitemrow = array();
 				$gradeitemrow[] =& $mform->createElement('advcheckbox', 'gradeitem_enabled_'.$gradeitem->id, '', '');
 				$gradeitemrow[] =& $mform->createElement('select', 'gradeitem_comparator_'.$gradeitem->id, '', $comparators);
-				$gradeitemrow[] =& $mform->createElement('text', 'gradeitem_value_'.$gradeitem->id, '', array('size' => 10));
+				$gradeitemrow[] =& $mform->createElement('text', 'gradeitem_value_'.$gradeitem->id, '', array('size' => 6));
+				if ($gradeitem->grademax) {
+					$gradeitemrow[] =& $mform->createElement('static', '', '', get_string('gradeitem_out_of', 'engagementindicator_gradebook', number_format($gradeitem->grademax, 1)) . ' | ');
+				}
 				$gradeitemrow[] =& $mform->createElement('static', '', '', get_string('weighting', 'engagementindicator_gradebook'));
 				$gradeitemrow[] =& $mform->createElement('text', 'gradeitem_weighting_'.$gradeitem->id, '', array('size' => 5));
 				$gradeitemrow[] =& $mform->createElement('static', '', '', '%');
