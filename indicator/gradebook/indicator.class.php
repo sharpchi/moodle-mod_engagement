@@ -50,7 +50,8 @@ class indicator_gradebook extends indicator {
 		foreach ($gradeitems as $gradeitem) {
 			switch ($gradeitem->itemtype) {
 				case null:
-					// category or something else
+					break;
+				case "course":
 					break;
 				case "manual":
 					$grades = $DB->get_records_sql("SELECT * FROM {grade_grades} WHERE itemid = $gradeitem->id");
