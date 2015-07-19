@@ -85,6 +85,7 @@ class engagementindicator_gradebook_thresholds_form {
 					}
 					// Add group
 					$mform->addGroup($gradeitemrow, 'group_gradeitem_'.$gradeitem->id, $gradeitemrow_label . $gradeitemhint, array(' '), false);
+					$mform->addHelpButton('group_gradeitem_'.$gradeitem->id, 'group_gradeitem', 'engagementindicator_gradebook');
 					$mform->setType('gradeitem_weighting_'.$gradeitem->id, PARAM_INT);
 					$mform->setType('gradeitem_value_'.$gradeitem->id, PARAM_RAW);
 					$mform->disabledIf('gradeitem_comparator_'.$gradeitem->id, 'gradeitem_enabled_'.$gradeitem->id);

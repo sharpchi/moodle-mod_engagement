@@ -24,9 +24,11 @@
 
 // Standard plugin strings.
 $string['pluginname'] = 'Gradebook';
+$string['pluginname_help'] = 'This indicator calculates risk rating based data from the gradebook.';
 
 // Settings.
 $string['atriskif'] = 'At risk if the following condition(s) are met:';
+$string['group_gradeitem_help'] = 'Tick the checkbox to count this gradebook item in the calculations for this indicator. Then, specify the comparison operator, the condition to compare against, and the weighting (number between 0-100) to add to the risk rating if the comparison holds true. For example, if this is set to "less than" and "5", if the record for a student for this grade item is 4, then this grade item will trigger and contribute the specified weighting to the risk rating for this indicator.';
 
 // Errors
 $string['weightingsumonehundred'] = "Weightings for Gradebook indicator must sum to 100";
