@@ -25,6 +25,7 @@
 // Standard plugin strings.
 $string['pluginname'] = 'Gradebook';
 $string['pluginname_help'] = 'This indicator calculates risk rating based data from the gradebook.';
+$string['mailer_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their gradebook data. The data from gradebook items selected in the settings screen are outlined in a column to the right.';
 
 // Settings.
 $string['atriskif'] = 'At risk if the following condition(s) are met:';
