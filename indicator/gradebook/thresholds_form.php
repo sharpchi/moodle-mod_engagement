@@ -67,9 +67,12 @@ class engagementindicator_gradebook_thresholds_form {
 					} else {
 						$gradeitemrow_label = $gradeitem->itemname;
 					}
+					// Add checkbox
+					$mform->addElement('advcheckbox', 'gradeitem_enabled_'.$gradeitem->id, $gradeitemrow_label . $gradeitemhint, get_string('gradeitem_enabled', 'engagementindicator_gradebook', $gradeitemrow_label), array('data-gradeitem_id'=>$gradeitem->id));
+					$mform->addHelpButton('gradeitem_enabled_'.$gradeitem->id, 'group_gradeitem', 'engagementindicator_gradebook');
 					// Populate group
 					$gradeitemrow = array();
-					$gradeitemrow[] =& $mform->createElement('advcheckbox', 'gradeitem_enabled_'.$gradeitem->id, '', '');
+					$gradeitemrow[] =& $mform->createElement('static', '', '', $gradeitemrow_label);
 					$gradeitemrow[] =& $mform->createElement('select', 'gradeitem_comparator_'.$gradeitem->id, '', $comparators);
 					$gradeitemrow[] =& $mform->createElement('text', 'gradeitem_value_'.$gradeitem->id, '', array('size' => 6));
 					if ($gradeitem->grademax) {
@@ -84,16 +87,36 @@ class engagementindicator_gradebook_thresholds_form {
 						$gradeitemhint = '';
 					}
 					// Add group
-					$mform->addGroup($gradeitemrow, 'group_gradeitem_'.$gradeitem->id, $gradeitemrow_label . $gradeitemhint, array(' '), false);
-					$mform->addHelpButton('group_gradeitem_'.$gradeitem->id, 'group_gradeitem', 'engagementindicator_gradebook');
+					$mform->addElement('html', '<span id="gradeitem_settings_row_' . $gradeitem->id . '">');
+					$mform->addGroup($gradeitemrow, 'group_gradeitem_'.$gradeitem->id, '', array(' '), false);
 					$mform->setType('gradeitem_weighting_'.$gradeitem->id, PARAM_INT);
 					$mform->setType('gradeitem_value_'.$gradeitem->id, PARAM_RAW);
-					$mform->disabledIf('gradeitem_comparator_'.$gradeitem->id, 'gradeitem_enabled_'.$gradeitem->id);
-					$mform->disabledIf('gradeitem_value_'.$gradeitem->id, 'gradeitem_enabled_'.$gradeitem->id);
-					$mform->disabledIf('gradeitem_weighting_'.$gradeitem->id, 'gradeitem_enabled_'.$gradeitem->id);
+					$mform->addElement('html', '</span>');
 				}
 			}
 		}
+		$js = "
+		<script>
+			function gradeitem_toggle(o) {
+				gradeitem_id = o.get('name').replace('gradeitem_enabled_', '');
+				enabled = o.get('checked');
+				console.log(enabled);
+				if (enabled) {
+					Y.one('span[id=gradeitem_settings_row_' + gradeitem_id + ']').show();
+				} else {
+					Y.one('span[id=gradeitem_settings_row_' + gradeitem_id + ']').hide();
+				}
+			}
+			Y.all('input[name^=gradeitem_enabled_]').each(function() {
+				console.log(this);
+				gradeitem_toggle(this);
+			});
+			Y.all('input[name^=gradeitem_enabled_]').on('click', function(e) {
+				gradeitem_toggle(e.target);
+			});
+			
+		</script>";
+		$mform->addElement('html', $js);
     }
 	
 	public function validation($data, $files) {
