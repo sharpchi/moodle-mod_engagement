@@ -67,6 +67,11 @@ class engagementindicator_gradebook_thresholds_form {
 					} else {
 						$gradeitemrow_label = $gradeitem->itemname;
 					}
+					if ($gradeitem->gradetype == 1) {
+						$gradeitemhint = " (".number_format($gradeitem->grademin, 1)."-".number_format($gradeitem->grademax, 1).")";
+					} else {
+						$gradeitemhint = '';
+					}
 					// Add checkbox
 					$mform->addElement('advcheckbox', 'gradeitem_enabled_'.$gradeitem->id, $gradeitemrow_label . $gradeitemhint, get_string('gradeitem_enabled', 'engagementindicator_gradebook', $gradeitemrow_label), array('data-gradeitem_id'=>$gradeitem->id));
 					$mform->addHelpButton('gradeitem_enabled_'.$gradeitem->id, 'group_gradeitem', 'engagementindicator_gradebook');
@@ -81,11 +86,6 @@ class engagementindicator_gradebook_thresholds_form {
 					$gradeitemrow[] =& $mform->createElement('static', '', '', get_string('weighting', 'engagementindicator_gradebook'));
 					$gradeitemrow[] =& $mform->createElement('text', 'gradeitem_weighting_'.$gradeitem->id, '', array('size' => 5));
 					$gradeitemrow[] =& $mform->createElement('static', '', '', '%');
-					if ($gradeitem->gradetype == 1) {
-						$gradeitemhint = " (".number_format($gradeitem->grademin, 1)."-".number_format($gradeitem->grademax, 1).")";
-					} else {
-						$gradeitemhint = '';
-					}
 					// Add group
 					$mform->addElement('html', '<span id="gradeitem_settings_row_' . $gradeitem->id . '">');
 					$mform->addGroup($gradeitemrow, 'group_gradeitem_'.$gradeitem->id, '', array(' '), false);
