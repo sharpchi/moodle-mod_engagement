@@ -261,7 +261,7 @@ class indicator_gradebook extends indicator {
 			$t = $record['triggeredby'];
 			$ts = implode('<br />', $t);
 			$t = $t ? count($t) : 0;
-			$return_column['display'][$userid] = $t;
+			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$t.'</span>';
 			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$ts</div>";
 		}
 		$return_columns[] = $return_column;
@@ -273,7 +273,7 @@ class indicator_gradebook extends indicator {
 			$n = $record['nottriggeredby'];
 			$ns = implode('<br />', $n);
 			$n = $n ? count($n) : 0;
-			$return_column['display'][$userid] = $n;
+			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$n.'</span>';
 			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$ns</div>";
 		}
 		$return_columns[] = $return_column;

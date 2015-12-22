@@ -356,7 +356,7 @@ class indicator_assessment extends indicator {
 		$return_column['header'] = get_string('report_assessment_overdue', 'engagementindicator_assessment');
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = $record['numberoverduenotsubmitted'];
+			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$record['numberoverduenotsubmitted'].'</span>';
 			$detail = implode('<br />', $record['overdueassessments']);
 			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$detail</div><br />";
 		}
@@ -366,7 +366,7 @@ class indicator_assessment extends indicator {
 		$return_column['header'] = get_string('report_assessment_submitted', 'engagementindicator_assessment');
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = $record['numbersubmissions'];
+			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>';
 			$o = $record['numberoverduesubmitted'];
 			$o = $o ? $o : 0;
 			$l = $record['totallateinterval'] / 60 / 60 / 24;
