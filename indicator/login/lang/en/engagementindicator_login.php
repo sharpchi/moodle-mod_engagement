@@ -64,3 +64,9 @@ $string['weighting_help'] = 'This figure shows the amount this item
 contributes towards the overall risk for the Login indicator.
 The local risk will be multiplied by this to form the risk
 contribution.';
+
+// Mailer report
+$string['report_login_risk'] = 'Login risk';
+$string['report_login_dayssince'] = 'Days since last login';
+$string['report_login_perweek'] = 'Logins per week';
+

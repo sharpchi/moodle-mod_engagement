@@ -278,4 +278,56 @@ class indicator_forum extends indicator {
         $settings['max_readposts'] = 0;
         return $settings;
     }
+	
+	public function get_data_for_mailer() {
+		
+		$risks = $this->get_course_risks();
+		$data = array();
+		
+		foreach ($this->userarray as $userid) {
+			$data[$userid] = array();
+		}
+		
+		// Collect and process data
+		foreach ($this->rawdata->posts as $userid => $record) {
+			if (array_key_exists($userid, $data)) {
+				$data[$userid]['total'] = $record['total']; // total postings (not readings)
+				$data[$userid]['new'] = $record['new'];
+				$data[$userid]['replies'] = $record['replies'];
+				$data[$userid]['read'] = $record['read'];
+			}
+		}
+		
+		// Parse for display
+		$return_columns = array();
+		// Column for risk
+		$return_column = array();
+		$return_column['header'] = get_string('report_forum_risk', 'engagementindicator_forum');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+		}
+		$return_columns[] = $return_column;
+		// Column for read posts
+		$return_column = array();
+		$return_column['header'] = get_string('report_readposts', 'engagementindicator_forum');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = $record['read'];
+		}
+		$return_columns[] = $return_column;
+		// Column for number posted
+		$return_column = array();
+		$return_column['header'] = get_string('report_posted', 'engagementindicator_forum');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = $record['total'];
+		}
+		$return_columns[] = $return_column;
+		
+		// Return
+		return $return_columns;
+		
+	}
+	
 }

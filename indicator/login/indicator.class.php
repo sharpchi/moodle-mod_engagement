@@ -240,4 +240,66 @@ class indicator_login extends indicator {
         $settings['session_length'] = 60; // 60 minutes
         return $settings;
     }
+	
+	public function get_data_for_mailer() {
+		
+		$risks = $this->get_course_risks();
+		$data = array();
+		
+		foreach ($this->userarray as $userid) {
+			$data[$userid] = array();
+		}
+		
+		// Collect and process data
+		foreach ($this->rawdata as $userid => $record) {
+			if (array_key_exists($userid, $data)) {
+				$data[$userid]['totaltimes'] = count($record['lengths']);
+				$data[$userid]['lastlogin'] = $record['lastlogin'];
+				if ($record['total'] > 0) {
+					$data[$userid]['averagesessionlength'] = array_sum($record['lengths']) / count($record['lengths']);
+					$data[$userid]['averageperweek'] = array_sum($record['weeks']) / count($record['weeks']);
+				} else {
+					$data[$userid]['averagesessionlength'] = "";
+					$data[$userid]['averageperweek'] = "";
+				}
+			}
+		}
+		
+		// Parse for display
+		$return_columns = array();
+		// Column for risk
+		$return_column = array();
+		$return_column['header'] = get_string('report_login_risk', 'engagementindicator_login');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+		}
+		$return_columns[] = $return_column;
+		// Column for days since last login
+		$return_column = array();
+		$return_column['header'] = get_string('report_login_dayssince', 'engagementindicator_login');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$n = $record['lastlogin'];
+			if ($n) {
+				$return_column['display'][$userid] = sprintf("%.1d", (time() - $n) / 60 / 60 / 24.0);
+			} else {
+				$return_column['display'][$userid] = '';
+			}
+		}
+		$return_columns[] = $return_column;
+		// Column for logins per week
+		$return_column = array();
+		$return_column['header'] = get_string('report_login_perweek', 'engagementindicator_login');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = sprintf("%.1d", $record['averageperweek']);
+		}
+		$return_columns[] = $return_column;
+		
+		// Return
+		return $return_columns;
+		
+	}
+	
 }

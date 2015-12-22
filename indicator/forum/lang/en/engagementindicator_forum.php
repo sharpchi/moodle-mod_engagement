@@ -58,3 +58,10 @@ $string['weighting_help'] = 'This figure shows the amount this item
 contributes towards the overall risk for the Forum indicator.
 The local risk will be multiplied by this to form the risk
 contribution.';
+
+// Mailer report
+$string['report_forum_risk'] = 'Forum risk';
+$string['report_readposts'] = 'Posts read';
+$string['report_posted'] = 'Posted';
+
+

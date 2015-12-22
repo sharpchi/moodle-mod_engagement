@@ -208,7 +208,15 @@ abstract class indicator {
      * @return array    return array of objects keyed on userid
      */
     abstract protected function calculate_risks(array $userids);
-
+	
+    /**
+     * get_data_for_mailer - work out human-readable data representations for the mailer report
+     *
+     * @abstract
+     * @return array	return array of columns (as arrays) to display
+     */
+	abstract public function get_data_for_mailer();
+	
     /**
      * get_name - get the name of the indicator (i.e. indicator_login => login)
      *

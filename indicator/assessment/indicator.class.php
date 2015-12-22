@@ -310,6 +310,81 @@ class indicator_assessment extends indicator {
 
         return $settings;
     }
+	
+	public function get_data_for_mailer() {
+		
+		$risks = $this->get_course_risks();
+		$data = array();
+		
+		foreach ($this->userarray as $userid) {
+			$data[$userid] = array();
+		}
+		
+		// Collect and process data
+		foreach ($this->rawdata->assessments as $assessment) {
+			foreach ($this->userarray as $userid) {
+				$submittime = isset($assessment->submissions[$userid]['submitted']) ? $assessment->submissions[$userid]['submitted'] : PHP_INT_MAX;
+				$timedue = isset($assessment->submissions[$userid]['due']) ? $assessment->submissions[$userid]['due'] : 1;
+				$interval = $submittime - $timedue;
+				if (isset($assessment->submissions[$userid]['submitted'])) {
+					$data[$userid]['numbersubmissions'] += 1;
+					if ($interval > 0) {
+						$data[$userid]['numberoverduesubmitted'] += 1;
+						$data[$userid]['totallateinterval'] += $interval;
+					}
+				} else if ($assessment->due > time()) {
+					// Not due yet
+				} else {
+					$data[$userid]['numberoverduenotsubmitted'] += 1;
+					$data[$userid]['overdueassessments'][] = $assessment->description;
+				}
+			}
+		}
+		
+		// Parse for display
+		$return_columns = array();
+		// Column for risk
+		$return_column = array();
+		$return_column['header'] = get_string('report_assessment_risk', 'engagementindicator_assessment');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+		}
+		$return_columns[] = $return_column;
+		// Column for number overdue
+		$return_column = array();
+		$return_column['header'] = get_string('report_assessment_overdue', 'engagementindicator_assessment');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = $record['numberoverduenotsubmitted'];
+			$detail = implode('<br />', $record['overdueassessments']);
+			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$detail</div><br />";
+		}
+		$return_columns[] = $return_column;
+		// Column for number submitted
+		$return_column = array();
+		$return_column['header'] = get_string('report_assessment_submitted', 'engagementindicator_assessment');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = $record['numbersubmissions'];
+			$o = $record['numberoverduesubmitted'];
+			$o = $o ? $o : 0;
+			$l = $record['totallateinterval'] / 60 / 60 / 24;
+			$v = $l / $s;
+			$ov = new stdClass();
+			$ov->o = $o;
+			$ov->v = $v;
+			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>"
+				. get_string('report_assessment_overduelate', 'engagementindicator_assessment', $ov)
+				. "</div>";
+		}
+		$return_columns[] = $return_column;
+		
+		// Return
+		return $return_columns;
+		
+	}
+	
 }
 
 class assessment_risk_calculator {

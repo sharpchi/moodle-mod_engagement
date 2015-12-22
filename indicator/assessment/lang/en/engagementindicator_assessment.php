@@ -68,3 +68,8 @@ $string['overduemaximumdays_help'] = 'The number of days after which a student r
 $string['overduesubmittedweighting_help'] = 'The maximum weighting applied for each late submission. The weighting of late submissions on the risk rating for this indicator increases over time until reaching this maximum weighting when the overdue maximum days is reached. Enter a whole number between 0-100.';
 $string['overduenotsubmittedweighting_help'] = 'The maximum weighting applied for each non-submission. The weighting of non-submissions on the risk rating for this indicator increases over time until reaching this maximum weighting when the overdue maximum days is reached.  Enter a whole number between 0-100.';
 
+// mailer report
+$string['report_assessment_risk'] = 'Assessment risk';
+$string['report_assessment_overdue'] = 'Overdue';
+$string['report_assessment_submitted'] = 'Submitted';
+$string['report_assessment_overduelate'] = '{$a->o} overdue, average {$a->v} days late';

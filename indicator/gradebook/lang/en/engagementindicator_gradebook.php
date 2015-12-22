@@ -56,4 +56,8 @@ $string['neq'] = " not equal to ";
 $string['neq'] = " not not equal to ";
 $string['gradeitem_out_of'] = 'out of {$a}';
 
+// Mailer report
+$string['report_gradebook_risk'] = 'Gradebook risk';
+$string['report_gradebook_triggered'] = 'Triggered';
+$string['report_gradebook_nottriggered'] = 'Not triggered';
 

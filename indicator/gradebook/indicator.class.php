@@ -220,4 +220,67 @@ class indicator_gradebook extends indicator {
         $settings = array();
         return $settings;
     }
+	
+	public function get_data_for_mailer() {
+		
+		$risks = $this->get_course_risks();
+		$data = array();
+		
+		foreach ($this->userarray as $userid) {
+			$data[$userid] = array();
+		}
+		
+		// Collect and process data
+		foreach ($this->userarray as $userid) {
+			$obj = $risks[$userid];
+			$data[$userid]['risk'] = $obj->risk;
+			foreach ($obj->info as $info) {
+				if ($info->riskcontribution == '0%') {
+					$data[$userid]['nottriggeredby'][] = $info->title . " " . $info->logic;
+				} else {
+					$data[$userid]['triggeredby'][] = $info->title . " " . $info->logic;
+				}
+			}
+		}
+		
+		// Parse for display
+		$return_columns = array();
+		// Column for risk
+		$return_column = array();
+		$return_column['header'] = get_string('report_gradebook_risk', 'engagementindicator_gradebook');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+		}
+		$return_columns[] = $return_column;
+		// Column for days since last login
+		$return_column = array();
+		$return_column['header'] = get_string('report_gradebook_triggered', 'engagementindicator_gradebook');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$t = $record['triggeredby'];
+			$ts = implode('<br />', $t);
+			$t = $t ? count($t) : 0;
+			$return_column['display'][$userid] = $t;
+			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$ts</div>";
+		}
+		$return_columns[] = $return_column;
+		// Column for logins per week
+		$return_column = array();
+		$return_column['header'] = get_string('report_gradebook_nottriggered', 'engagementindicator_gradebook');
+		$return_column['display'] = array();
+		foreach ($data as $userid => $record) {
+			$n = $record['nottriggeredby'];
+			$ns = implode('<br />', $n);
+			$n = $n ? count($n) : 0;
+			$return_column['display'][$userid] = $n;
+			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$ns</div>";
+		}
+		$return_columns[] = $return_column;
+		
+		// Return
+		return $return_columns;
+		
+	}
+	
 }
