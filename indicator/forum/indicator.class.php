@@ -303,25 +303,34 @@ class indicator_forum extends indicator {
 		// Column for risk
 		$return_column = array();
 		$return_column['header'] = get_string('report_forum_risk', 'engagementindicator_forum');
+		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+				sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
+				'</span></div>';
 		}
 		$return_columns[] = $return_column;
 		// Column for read posts
 		$return_column = array();
 		$return_column['header'] = get_string('report_readposts', 'engagementindicator_forum');
+		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = $record['read'];
+			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+				$record['read'].
+				'</span></div>';
 		}
 		$return_columns[] = $return_column;
 		// Column for number posted
 		$return_column = array();
 		$return_column['header'] = get_string('report_posted', 'engagementindicator_forum');
+		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = $record['total'];
+			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+				$record['total'].
+				'</span></div>';
 		}
 		$return_columns[] = $return_column;
 		

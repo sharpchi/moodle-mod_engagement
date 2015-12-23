@@ -270,19 +270,25 @@ class indicator_login extends indicator {
 		// Column for risk
 		$return_column = array();
 		$return_column['header'] = get_string('report_login_risk', 'engagementindicator_login');
+		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+				sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
+				'</span></div>';
 		}
 		$return_columns[] = $return_column;
 		// Column for days since last login
 		$return_column = array();
 		$return_column['header'] = get_string('report_login_dayssince', 'engagementindicator_login');
+		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
 			$n = $record['lastlogin'];
 			if ($n) {
-				$return_column['display'][$userid] = sprintf("%.1d", (time() - $n) / 60 / 60 / 24.0);
+				$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+					sprintf("%.1d", (time() - $n) / 60 / 60 / 24.0).
+					'</span></div>';
 			} else {
 				$return_column['display'][$userid] = '';
 			}
@@ -291,9 +297,12 @@ class indicator_login extends indicator {
 		// Column for logins per week
 		$return_column = array();
 		$return_column['header'] = get_string('report_login_perweek', 'engagementindicator_login');
+		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = sprintf("%.1d", $record['averageperweek']);
+			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+				sprintf("%.1d", $record['averageperweek']).
+				'</span></div>';
 		}
 		$return_columns[] = $return_column;
 		

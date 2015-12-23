@@ -248,33 +248,38 @@ class indicator_gradebook extends indicator {
 		// Column for risk
 		$return_column = array();
 		$return_column['header'] = get_string('report_gradebook_risk', 'engagementindicator_gradebook');
+		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+				sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
+				'</span></div>';
 		}
 		$return_columns[] = $return_column;
-		// Column for days since last login
+		// Column for triggered
 		$return_column = array();
 		$return_column['header'] = get_string('report_gradebook_triggered', 'engagementindicator_gradebook');
+		$return_column['filterable'] = True;
+		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$t = $record['triggeredby'];
-			$ts = implode('<br />', $t);
-			$t = $t ? count($t) : 0;
-			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$t.'</span>';
-			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$ts</div>";
+			$return_column['display'][$userid] = '<div>'.
+				'<span class="report_engagement_display">'.($record['triggeredby'] ? count($record['triggeredby']) : 0).'</span>'.
+				"<div class='report_engagement_detail'>".implode('<br />', $record['triggeredby'])."</div>".
+				'</div>';
 		}
 		$return_columns[] = $return_column;
-		// Column for logins per week
+		// Column for not triggered
 		$return_column = array();
 		$return_column['header'] = get_string('report_gradebook_nottriggered', 'engagementindicator_gradebook');
+		$return_column['filterable'] = True;
+		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$n = $record['nottriggeredby'];
-			$ns = implode('<br />', $n);
-			$n = $n ? count($n) : 0;
-			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$n.'</span>';
-			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$ns</div>";
+			$return_column['display'][$userid] = '<div>'.
+				'<span class="report_engagement_display">'.($record['nottriggeredby'] ? count($record['nottriggeredby']) : 0).'</span>'.
+				"<div class='report_engagement_detail'>".implode('<br />', $record['nottriggeredby'])."</div>".
+				'</div>';
 		}
 		$return_columns[] = $return_column;
 		

@@ -346,37 +346,44 @@ class indicator_assessment extends indicator {
 		// Column for risk
 		$return_column = array();
 		$return_column['header'] = get_string('report_assessment_risk', 'engagementindicator_assessment');
+		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = sprintf("%.0f", $risks[$userid]->{'risk'} * 100);
+			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+				sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
+				'</span></div>';
 		}
 		$return_columns[] = $return_column;
 		// Column for number overdue
 		$return_column = array();
 		$return_column['header'] = get_string('report_assessment_overdue', 'engagementindicator_assessment');
+		$return_column['filterable'] = True;
+		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$record['numberoverduenotsubmitted'].'</span>';
 			$detail = implode('<br />', $record['overdueassessments']);
-			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>$detail</div><br />";
+			$return_column['display'][$userid] = '<div>'.
+				'<span class="report_engagement_display">'.$record['numberoverduenotsubmitted'].'</span>'.
+				"<div class='report_engagement_detail'>$detail</div><br />".
+				'</div>';
 		}
 		$return_columns[] = $return_column;
 		// Column for number submitted
 		$return_column = array();
 		$return_column['header'] = get_string('report_assessment_submitted', 'engagementindicator_assessment');
+		$return_column['filterable'] = True;
+		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>';
-			$o = $record['numberoverduesubmitted'];
-			$o = $o ? $o : 0;
-			$l = $record['totallateinterval'] / 60 / 60 / 24;
-			$v = $l / $s;
 			$ov = new stdClass();
-			$ov->o = $o;
-			$ov->v = $v;
-			$return_column['display'][$userid] .= "<div class='report_engagement_detail'>"
-				. get_string('report_assessment_overduelate', 'engagementindicator_assessment', $ov)
-				. "</div>";
+			$ov->o = $record['numberoverduesubmitted'] ? $record['numberoverduesubmitted'] : 0;
+			$ov->v = ($record['totallateinterval'] / 60 / 60 / 24) / $record['numbersubmissions'];
+			$return_column['display'][$userid] = '<div>'.
+				'<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>'.
+				"<div class='report_engagement_detail'>".
+				get_string('report_assessment_overduelate', 'engagementindicator_assessment', $ov).
+				"</div>".
+			'</div>';
 		}
 		$return_columns[] = $return_column;
 		
