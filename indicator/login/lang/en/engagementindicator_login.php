@@ -69,4 +69,6 @@ contribution.';
 $string['report_login_risk'] = 'Login risk';
 $string['report_login_dayssince'] = 'Days since last login';
 $string['report_login_perweek'] = 'Logins per week';
+$string['mailer_checkbox_column_header'] = 'Login'; // Keep this short
+$string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their login activity. Their login metrics are outlined in columns to the right.';
 

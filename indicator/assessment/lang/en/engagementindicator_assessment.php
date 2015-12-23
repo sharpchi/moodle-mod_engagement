@@ -73,3 +73,5 @@ $string['report_assessment_risk'] = 'Assessment risk';
 $string['report_assessment_overdue'] = 'Overdue';
 $string['report_assessment_submitted'] = 'Submitted';
 $string['report_assessment_overduelate'] = '{$a->o} overdue, average {$a->v} days late';
+$string['mailer_checkbox_column_header'] = 'Asses.'; // Keep this short
+$string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their assessment submission activity. Their assessment metrics are outlined in columns to the right.';

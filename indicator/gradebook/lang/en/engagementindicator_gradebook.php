@@ -60,4 +60,6 @@ $string['gradeitem_out_of'] = 'out of {$a}';
 $string['report_gradebook_risk'] = 'Gradebook risk';
 $string['report_gradebook_triggered'] = 'Triggered';
 $string['report_gradebook_nottriggered'] = 'Not triggered';
+$string['mailer_checkbox_column_header'] = 'Grades'; // Keep this short
+$string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their gradebook data. The data from gradebook items selected in the settings screen are outlined in columns to the right.';
 
