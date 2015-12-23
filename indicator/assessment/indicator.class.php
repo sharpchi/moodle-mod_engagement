@@ -317,7 +317,13 @@ class indicator_assessment extends indicator {
 		$data = array();
 		
 		foreach ($this->userarray as $userid) {
-			$data[$userid] = array();
+			$data[$userid] = array(
+				'numbersubmissions' => null,
+				'numberoverduesubmitted' => null,
+				'totallateinterval' => null,
+				'numberoverduenotsubmitted' => null,
+				'overdueassessments' => null
+			);
 		}
 		
 		// Collect and process data
@@ -375,15 +381,17 @@ class indicator_assessment extends indicator {
 		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$ov = new stdClass();
-			$ov->o = $record['numberoverduesubmitted'] ? $record['numberoverduesubmitted'] : 0;
-			$ov->v = sprintf("%0.1f", ($record['totallateinterval'] / 60 / 60 / 24) / $record['numbersubmissions']);
 			$return_column['display'][$userid] = '<div>'.
-				'<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>'.
-				"<div class='report_engagement_detail'>".
-				get_string('report_assessment_overduelate', 'engagementindicator_assessment', $ov).
-				"</div>".
-			'</div>';
+				'<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>';
+			if (!is_null($record['numbersubmissions']) && $record['numbersubmissions'] != 0) {
+				$ov = new stdClass();
+				$ov->o = $record['numberoverduesubmitted'] ? $record['numberoverduesubmitted'] : 0;
+				$ov->v = sprintf("%0.1f", ($record['totallateinterval'] / 60 / 60 / 24) / $record['numbersubmissions']);
+				$return_column['display'][$userid] .= "<div class='report_engagement_detail'>".
+					get_string('report_assessment_overduelate', 'engagementindicator_assessment', $ov).
+					"</div>";
+			}
+			$return_column['display'][$userid] .= '</div>';
 		}
 		$return_columns[] = $return_column;
 		
