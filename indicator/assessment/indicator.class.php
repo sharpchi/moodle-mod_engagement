@@ -377,7 +377,7 @@ class indicator_assessment extends indicator {
 		foreach ($data as $userid => $record) {
 			$ov = new stdClass();
 			$ov->o = $record['numberoverduesubmitted'] ? $record['numberoverduesubmitted'] : 0;
-			$ov->v = ($record['totallateinterval'] / 60 / 60 / 24) / $record['numbersubmissions'];
+			$ov->v = sprintf("%0.1f", ($record['totallateinterval'] / 60 / 60 / 24) / $record['numbersubmissions']);
 			$return_column['display'][$userid] = '<div>'.
 				'<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>'.
 				"<div class='report_engagement_detail'>".
