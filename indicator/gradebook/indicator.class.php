@@ -264,9 +264,11 @@ class indicator_gradebook extends indicator {
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
 			$return_column['display'][$userid] = '<div>'.
-				'<span class="report_engagement_display">'.($record['triggeredby'] ? count($record['triggeredby']) : 0).'</span>'.
-				"<div class='report_engagement_detail'>".implode('<br />', $record['triggeredby'])."</div>".
-				'</div>';
+				'<span class="report_engagement_display">'.(isset($record['triggeredby']) ? count($record['triggeredby']) : 0).'</span>';
+			if (isset($record['triggeredby'])) {
+				$return_column['display'][$userid] .= "<div class='report_engagement_detail'>".implode('<br />', $record['triggeredby'])."</div>";
+			}
+			$return_column['display'][$userid] .= '</div>';
 		}
 		$return_columns[] = $return_column;
 		// Column for not triggered
@@ -277,9 +279,11 @@ class indicator_gradebook extends indicator {
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
 			$return_column['display'][$userid] = '<div>'.
-				'<span class="report_engagement_display">'.($record['nottriggeredby'] ? count($record['nottriggeredby']) : 0).'</span>'.
-				"<div class='report_engagement_detail'>".implode('<br />', $record['nottriggeredby'])."</div>".
-				'</div>';
+				'<span class="report_engagement_display">'.(isset($record['nottriggeredby']) ? count($record['nottriggeredby']) : 0).'</span>';
+			if (isset($record['nottriggeredby'])) {
+				"<div class='report_engagement_detail'>".implode('<br />', $record['nottriggeredby'])."</div>";
+			}
+			$return_column['display'][$userid] .= '</div>';
 		}
 		$return_columns[] = $return_column;
 		

@@ -318,7 +318,7 @@ class indicator_forum extends indicator {
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
 			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
-				$record['read'].
+				(isset($record['read']) ? $record['read'] : '').
 				'</span></div>';
 		}
 		$return_columns[] = $return_column;
@@ -329,7 +329,7 @@ class indicator_forum extends indicator {
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
 			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
-				$record['total'].
+				(isset($record['total']) ? $record['total'] : '').
 				'</span></div>';
 		}
 		$return_columns[] = $return_column;

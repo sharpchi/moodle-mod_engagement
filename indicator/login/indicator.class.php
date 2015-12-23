@@ -247,7 +247,12 @@ class indicator_login extends indicator {
 		$data = array();
 		
 		foreach ($this->userarray as $userid) {
-			$data[$userid] = array();
+			$data[$userid] = array(
+				'totaltimes' => null,
+				'lastlogin' => null,
+				'averagesessionlength' => null,
+				'averageperweek' => null
+			);
 		}
 		
 		// Collect and process data
