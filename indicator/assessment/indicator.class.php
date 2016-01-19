@@ -367,11 +367,12 @@ class indicator_assessment extends indicator {
 		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
 		$return_column['display'] = array();
 		foreach ($data as $userid => $record) {
-			$detail = implode('<br />', $record['overdueassessments']);
 			$return_column['display'][$userid] = '<div>'.
-				'<span class="report_engagement_display">'.$record['numberoverduenotsubmitted'].'</span>'.
-				"<div class='report_engagement_detail'>$detail</div><br />".
-				'</div>';
+				'<span class="report_engagement_display">'.$record['numberoverduenotsubmitted'].'</span>';
+			if (!is_null($record['overdueassessments'])) {
+				$return_column['display'][$userid] .= '<div class="report_engagement_detail">'.implode('<br />', $record['overdueassessments']).'</div><br />';
+			}
+			$return_column['display'][$userid] .= '</div>';
 		}
 		$return_columns[] = $return_column;
 		// Column for number submitted
