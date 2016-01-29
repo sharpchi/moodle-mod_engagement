@@ -66,3 +66,10 @@ $string['report_posted'] = 'Posted';
 $string['mailer_checkbox_column_header'] = 'Forum'; // Keep this short
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their forum activity. Their forum metrics are outlined in columns to the right.';
 
+// default snippet strings
+$string['defaultsnippet0'] = "The online discussion forum is an important component of this course and your participation is necessary.";
+$string['defaultsnippet1'] = "The online discussion forums are a great place to ask questions and get help for this unit.";
+$string['defaultsnippet2'] = "Remember that participating in the online discussion forum is an assessable component of this unit.";
+$string['defaultsnippet3'] = "Regularly catching up with the posts on the online discussion forum can help you keep an eye on what other students are asking and talking about - you may even see something that you hadn’t thought to ask.";
+$string['defaultsnippet4'] = "Consider posting in response to existing threads in the online discussion forum - this can really help you think through the material.";
+$string['defaultsnippet5'] = "The online discussion forum is a really active online space where other students are asking questions about this unit. You are likely to see something there that will help you.";

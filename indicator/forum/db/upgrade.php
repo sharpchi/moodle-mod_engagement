@@ -15,18 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info
+ * Upgrades for engagement
  *
- * @package    mod_engagement
- * @copyright  2012 NetSpot Pty Ltd
+ * @package    report_engagement
+ * @copyright  2016 Macquarie University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+function xmldb_engagementindicator_forum_upgrade($oldversion) {
+    global $CFG, $DB;
 
-$module->version   = 2016012901;       // The current plugin version (Date: YYYYMMDDXX)
-$module->requires  = 2013101800;      // Requires this Moodle version
-$module->component = 'mod_engagement'; // Full name of the plugin (used for diagnostics).
-$module->dependencies = array('report_engagement' => 2016012901);
-
-$module->maturity = MATURITY_STABLE;
+	// Populate DB with default snippets if necessary
+	if ($oldversion < 2016012915) {
+		require_once(dirname(__FILE__).'/../../../locallib.php');
+		engagementindicator_populate_snippets_from_lang('forum');
+	}
+	
+    return true;
+}

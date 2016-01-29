@@ -27,6 +27,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2015042102;
+$plugin->version  = 2016012916;
 $plugin->requires = 2010112400;  // Requires this Moodle version.
 $plugin->component = 'engagementindicator_gradebook';

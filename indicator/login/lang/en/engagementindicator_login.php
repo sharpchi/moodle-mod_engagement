@@ -72,3 +72,9 @@ $string['report_login_perweek'] = 'Logins per week';
 $string['mailer_checkbox_column_header'] = 'Login'; // Keep this short
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their login activity. Their login metrics are outlined in columns to the right.';
 
+// default snippet strings
+$string['defaultsnippet0'] = "I have noticed that you have not as yet accessed your unit website and I am wondering whether there is any support you need.";
+$string['defaultsnippet1'] = "I have noticed that you haven’t been accessing the resources on your unit website regularly.";
+$string['defaultsnippet2'] = "The website for this unit contains lots of information and resources, so it is important that you spend a bit more time online to benefit from these regularly.";
+$string['defaultsnippet3'] = "The unit website for this unit contains very useful resources that will help you better understand the concepts in this unit.";
+$string['defaultsnippet4'] = "I wanted to let you know that there will be some important resources released soon on the website for this unit - it would be a good idea to log on and check them out.";

@@ -75,3 +75,10 @@ $string['report_assessment_submitted'] = 'Submitted';
 $string['report_assessment_overduelate'] = '{$a->o} overdue, average {$a->v} days late';
 $string['mailer_checkbox_column_header'] = 'Asses.'; // Keep this short
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their assessment submission activity. Their assessment metrics are outlined in columns to the right.';
+
+// default snippet strings
+$string['defaultsnippet0'] = "I have noticed that you may be having trouble completing some assessments on time.";
+$string['defaultsnippet1'] = "Make sure to submit all assessments on time so you have an opportunity to earn the maximum available marks.";
+$string['defaultsnippet2'] = "Remember that a late penalty applies for assessments submitted after their due date and time.";
+$string['defaultsnippet3'] = "Please try to complete any missing assessments as soon as possible.";
+$string['defaultsnippet4'] = "Remember that you can check on the due dates of all assessments in the unit guide. It would be a good idea to write these dates in your calendar with reminders.";

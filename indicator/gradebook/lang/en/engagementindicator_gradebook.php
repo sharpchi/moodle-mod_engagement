@@ -63,3 +63,12 @@ $string['report_gradebook_nottriggered'] = 'Not triggered';
 $string['mailer_checkbox_column_header'] = 'Grades'; // Keep this short
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their gradebook data. The data from gradebook items selected in the settings screen are outlined in columns to the right.';
 
+// default snippet strings
+$string['defaultsnippet0'] = "Given your grades so far, I am concerned that you have not been keeping up with this unit.";
+$string['defaultsnippet1'] = "It is very important that you seek additional assistance to help improve your grade.";
+$string['defaultsnippet2'] = "There is some challenging work ahead in this unit, so don’t hesitate to ask questions or seek our help.";
+$string['defaultsnippet3'] = "Keeping up with the regular quizzes not only contributes to your final grade, but is a way to test yourself and get feedback on some of the fundamental aspects of the unit.";
+$string['defaultsnippet4'] = "In order to improve your understanding of this unit (and your performance on the upcoming assessments), please review the material available on the unit website.";
+$string['defaultsnippet5'] = "There is still time to catch up and improve your performance in later assessments.";
+$string['defaultsnippet6'] = "With the released results of the assessment I thought I’d get in touch and see how you are going. I know that you may be disappointed with your result but these early tasks are designed to give you feedback on how to improve.";
+
