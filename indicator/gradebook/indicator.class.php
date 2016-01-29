@@ -117,11 +117,13 @@ class indicator_gradebook extends indicator {
 			$reasons = array();
 			
 			foreach ($gradeitems as $gradeitem) {
-				$usergrade = $this->rawdata[$userid][$gradeitem->id];
-				$thresholdgrade = $gradeitem->value;
-				$weighting = $gradeitem->weighting / 100;
-				$reason = $this->calculate_risk($gradeitem->id, $risk, $gradeitem->comparator, $usergrade, $thresholdgrade, $weighting);
-				$reasons[] = $reason;
+				if (array_key_exists($userid, $this->rawdata) && array_key_exists($gradeitem->id, $this->rawdata[$userid])) {
+					$usergrade = $this->rawdata[$userid][$gradeitem->id];
+					$thresholdgrade = $gradeitem->value;
+					$weighting = $gradeitem->weighting / 100;
+					$reason = $this->calculate_risk($gradeitem->id, $risk, $gradeitem->comparator, $usergrade, $thresholdgrade, $weighting);
+					$reasons[] = $reason;
+				}
 			}
 			
 			$info = new stdClass();
