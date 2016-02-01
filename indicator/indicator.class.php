@@ -131,18 +131,18 @@ abstract class indicator {
         }
 
         require_once($CFG->dirroot . '/report/engagement/locallib.php');
-        $generic_settings = report_engagement_get_generic_settings($this->courseid);
+        $genericsettings = report_engagement_get_generic_settings($this->courseid);
         
         if ($startdate == null) {
-            if (isset($generic_settings['queryspecifydatetime']) && $generic_settings['queryspecifydatetime']->value && $generic_settings['querystartdatetime']->value) {
-                $this->startdate = $generic_settings['querystartdatetime']->value;
+            if (isset($genericsettings['queryspecifydatetime']) && $genericsettings['queryspecifydatetime']->value && $genericsettings['querystartdatetime']->value) {
+                $this->startdate = $genericsettings['querystartdatetime']->value;
             } else {
                 $this->startdate = $DB->get_field('course', 'startdate', array('id' => $this->courseid));
             }
         }
         if ($enddate == null) {
-            if (isset($generic_settings['queryspecifydatetime']) && $generic_settings['queryspecifydatetime']->value && $generic_settings['queryenddatetime']->value) {
-                $this->enddate = $generic_settings['queryenddatetime']->value;
+            if (isset($genericsettings['queryspecifydatetime']) && $genericsettings['queryspecifydatetime']->value && $genericsettings['queryenddatetime']->value) {
+                $this->enddate = $genericsettings['queryenddatetime']->value;
             } else {
                 $this->enddate = time();
             }

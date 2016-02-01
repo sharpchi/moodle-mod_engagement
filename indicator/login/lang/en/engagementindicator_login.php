@@ -65,14 +65,14 @@ contributes towards the overall risk for the Login indicator.
 The local risk will be multiplied by this to form the risk
 contribution.';
 
-// Mailer report
+// Mailer report.
 $string['report_login_risk'] = 'Login risk';
 $string['report_login_dayssince'] = 'Days since last login';
 $string['report_login_perweek'] = 'Logins per week';
-$string['mailer_checkbox_column_header'] = 'Login'; // Keep this short
+$string['mailer_checkbox_column_header'] = 'Login'; // Keep this short.
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their login activity. Their login metrics are outlined in columns to the right.';
 
-// default snippet strings
+// Default snippet strings.
 $string['defaultsnippet0'] = "I have noticed that you have not as yet accessed your unit website and I am wondering whether there is any support you need.";
 $string['defaultsnippet1'] = "I have noticed that you haven’t been accessing the resources on your unit website regularly.";
 $string['defaultsnippet2'] = "The website for this unit contains lots of information and resources, so it is important that you spend a bit more time online to benefit from these regularly.";

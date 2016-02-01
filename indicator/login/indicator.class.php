@@ -41,7 +41,7 @@ class indicator_login extends indicator {
 
         $sessions = array();
 
-        // set the sql based on log reader(s) available
+        // Set the sql based on log reader(s) available.
         $params = array();
         $params['courseid_legacy'] = $params['courseid_standard'] = $this->courseid;
         $params['startdate_legacy'] = $params['startdate_standard'] = $startdate;
@@ -60,12 +60,12 @@ class indicator_login extends indicator {
                                     WHERE courseid = :courseid_standard AND timecreated >= :startdate_standard AND timecreated <= :enddate_standard';
             }
         }
-        $query_sql = 'SELECT c.id, c.userid, c.time FROM (' . implode(' UNION ', $sql) . ') c ORDER BY time ASC';
-        // read logs
-        $logs = $DB->get_recordset_sql($query_sql, $params);
+        $querysql = 'SELECT c.id, c.userid, c.time FROM (' . implode(' UNION ', $sql) . ') c ORDER BY time ASC';
+        // Read logs.
+        $logs = $DB->get_recordset_sql($querysql, $params);
                 
         if ($logs) {
-            // Need to calculate sessions, sessions are defined by time between consequtive logs not exceeding setting.
+            // Need to calculate sessions, sessions are defined by time between consecutive logs not exceeding setting.
             foreach ($logs as $log) {
                 $increment = false;
                 $week = date('W', $log->time);
@@ -145,16 +145,16 @@ class indicator_login extends indicator {
             }
 
             // Logins past week.
-            $local_risk = self::calculate_risk($sessions[$userid]['pastweek'], $this->config['e_loginspastweek']);
-            $risk_contribution = $local_risk * $this->config['w_loginspastweek'];
+            $localrisk = self::calculate_risk($sessions[$userid]['pastweek'], $this->config['e_loginspastweek']);
+            $riskcontribution = $localrisk * $this->config['w_loginspastweek'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_loginspastweek']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_loginspastweek'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = get_string('reasonloginspastweek', 'engagementindicator_login', $this->config['e_loginspastweek']);
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $strloginspastweek;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
             // Average session length.
             if (($count = count($sessions[$userid]['lengths'])) > 0) {
@@ -162,16 +162,16 @@ class indicator_login extends indicator {
             } else {
                 $average = 0;
             }
-            $local_risk = self::calculate_risk($average, $this->config['e_avgsessionlength']);
-            $risk_contribution = $local_risk * $this->config['w_avgsessionlength'];
+            $localrisk = self::calculate_risk($average, $this->config['e_avgsessionlength']);
+            $riskcontribution = $localrisk * $this->config['w_avgsessionlength'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_avgsessionlength']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_avgsessionlength'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = get_string('reasonavgsessionlen', 'engagementindicator_login', $this->config['e_avgsessionlength']);
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $stravgsessionlength;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
             // Logins per week.
             if (($count = count($sessions[$userid]['weeks'])) > 0) {
@@ -179,29 +179,29 @@ class indicator_login extends indicator {
             } else {
                 $average = 0;
             }
-            $local_risk = self::calculate_risk($average, $this->config['e_loginsperweek']);
-            $risk_contribution = $local_risk * $this->config['w_loginsperweek'];
+            $localrisk = self::calculate_risk($average, $this->config['e_loginsperweek']);
+            $riskcontribution = $localrisk * $this->config['w_loginsperweek'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_loginsperweek']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_loginsperweek'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = get_string('reasonloginsperweek', 'engagementindicator_login', $this->config['e_loginsperweek']);
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $strloginsperweek;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
             // Time since last login.
             $timediff = time() - $sessions[$userid]['lastlogin'];
-            $local_risk = self::calculate_risk($this->config['e_timesincelast'], $timediff);
-            $risk_contribution = $local_risk * $this->config['w_timesincelast'];
+            $localrisk = self::calculate_risk($this->config['e_timesincelast'], $timediff);
+            $riskcontribution = $localrisk * $this->config['w_timesincelast'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_timesincelast']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_timesincelast'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = get_string('reasontimesincelogin', 'engagementindicator_login', $this->config['e_timesincelast'] / DAYSECS);
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $strtimesincelast;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
             $info = new stdClass();
             $info->risk = $risk;
@@ -255,7 +255,7 @@ class indicator_login extends indicator {
             );
         }
         
-        // Collect and process data
+        // Collect and process data.
         foreach ($this->rawdata as $userid => $record) {
             if (array_key_exists($userid, $data)) {
                 $data[$userid]['totaltimes'] = count($record['lengths']);
@@ -270,49 +270,49 @@ class indicator_login extends indicator {
             }
         }
         
-        // Parse for display
-        $return_columns = array();
-        // Column for risk
-        $return_column = array();
-        $return_column['header'] = get_string('report_login_risk', 'engagementindicator_login');
-        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-        $return_column['display'] = array();
+        // Parse for display.
+        $returncolumns = array();
+        // Column for risk.
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_login_risk', 'engagementindicator_login');
+        $returncolumn['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+            $returncolumn['display'][$userid] = '<div><span class="report_engagement_display">'.
                 sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
                 '</span></div>';
         }
-        $return_columns[] = $return_column;
+        $returncolumns[] = $returncolumn;
         // Column for days since last login
-        $return_column = array();
-        $return_column['header'] = get_string('report_login_dayssince', 'engagementindicator_login');
-        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-        $return_column['display'] = array();
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_login_dayssince', 'engagementindicator_login');
+        $returncolumn['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
             $n = $record['lastlogin'];
             if ($n) {
-                $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+                $returncolumn['display'][$userid] = '<div><span class="report_engagement_display">'.
                     sprintf("%.1d", (time() - $n) / 60 / 60 / 24.0).
                     '</span></div>';
             } else {
-                $return_column['display'][$userid] = '';
+                $returncolumn['display'][$userid] = '';
             }
         }
-        $return_columns[] = $return_column;
+        $returncolumns[] = $returncolumn;
         // Column for logins per week
-        $return_column = array();
-        $return_column['header'] = get_string('report_login_perweek', 'engagementindicator_login');
-        $return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
-        $return_column['display'] = array();
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_login_perweek', 'engagementindicator_login');
+        $returncolumn['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+            $returncolumn['display'][$userid] = '<div><span class="report_engagement_display">'.
                 sprintf("%.1d", $record['averageperweek']).
                 '</span></div>';
         }
-        $return_columns[] = $return_column;
+        $returncolumns[] = $returncolumn;
         
         // Return
-        return $return_columns;
+        return $returncolumns;
         
     }
     

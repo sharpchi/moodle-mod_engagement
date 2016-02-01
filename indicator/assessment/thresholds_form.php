@@ -61,7 +61,7 @@ class engagementindicator_assessment_thresholds_form {
         $mform->addGroup($grouparray, 'group_assessment_overduesubmitted',
             get_string('overduesubmittedweighting', 'engagementindicator_assessment'), '&nbsp;', false);
         $mform->addHelpButton('group_assessment_overduesubmitted', 'overduesubmittedweighting', 'engagementindicator_assessment');
-        $mform->setDefault('assessment_overduesubmittedweighting', $defaults['overduesubmittedweighting']*100);
+        $mform->setDefault('assessment_overduesubmittedweighting', $defaults['overduesubmittedweighting'] * 100);
         $mform->setType('assessment_overduesubmittedweighting', PARAM_FLOAT);
 
         // Display overduenotsubmittedweighting group.
@@ -71,7 +71,7 @@ class engagementindicator_assessment_thresholds_form {
         $mform->addGroup($grouparray, 'group_assessment_overduenotsubmitted',
             get_string('overduenotsubmittedweighting', 'engagementindicator_assessment'), '&nbsp;', false);
         $mform->addHelpButton('group_assessment_overduenotsubmitted', 'overduenotsubmittedweighting', 'engagementindicator_assessment');
-        $mform->setDefault('assessment_overduenotsubmittedweighting', $defaults['overduenotsubmittedweighting']*100);
+        $mform->setDefault('assessment_overduenotsubmittedweighting', $defaults['overduenotsubmittedweighting'] * 100);
         $mform->setType('assessment_overduenotsubmittedweighting', PARAM_FLOAT);
     }
 }

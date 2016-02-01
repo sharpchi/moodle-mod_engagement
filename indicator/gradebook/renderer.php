@@ -33,16 +33,20 @@ class engagementindicator_gradebook_renderer extends engagementindicator_rendere
             $html .= html_writer::end_tag('strong');
             $html .= html_writer::empty_tag('br');
             $html .= $this->output->help_icon('weighting', 'engagementindicator_gradebook');
-            $html .= html_writer::tag('span', get_string('weighting', 'engagementindicator_gradebook').': ' . $i->weighting);
+            $html .= html_writer::tag('span', get_string('weighting', 'engagementindicator_gradebook').
+                ': ' . $i->weighting);
             $html .= html_writer::empty_tag('br');
             $html .= $this->output->help_icon('localrisk', 'engagementindicator_gradebook');
-            $html .= html_writer::tag('span', get_string('localrisk', 'engagementindicator_gradebook').': ' . $i->localrisk);
+            $html .= html_writer::tag('span', get_string('localrisk', 'engagementindicator_gradebook').
+                ': ' . $i->localrisk);
             $html .= html_writer::empty_tag('br');
             $html .= $this->output->help_icon('riskcontribution', 'engagementindicator_gradebook');
-            $html .= html_writer::tag('span', get_string('riskcontribution', 'engagementindicator_gradebook').': ' .  $i->riskcontribution);
+            $html .= html_writer::tag('span', get_string('riskcontribution', 'engagementindicator_gradebook').
+                ': ' .  $i->riskcontribution);
             $html .= html_writer::empty_tag('br');
             $html .= $this->output->help_icon('logic', 'engagementindicator_gradebook');
-            $html .= html_writer::tag('span', get_string('logic', 'engagementindicator_gradebook').': ' .  $i->logic);
+            $html .= html_writer::tag('span', get_string('logic', 'engagementindicator_gradebook').
+                ': ' .  $i->logic);
             $html .= html_writer::empty_tag('br');
             $html .= html_writer::empty_tag('br');
         }

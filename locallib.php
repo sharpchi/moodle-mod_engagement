@@ -37,7 +37,7 @@ function engagementindicator_populate_snippets_from_lang($category) {
     $stringman = get_string_manager();
     
     if ($dbman->table_exists('report_engagement_snippets')) {
-        if (!$DB->count_records('report_engagement_snippets', array('category'=>$category))) {
+        if (!$DB->count_records('report_engagement_snippets', array('category' => $category))) {
             // Add default snippets
             $records = [];
             $counter = 0;

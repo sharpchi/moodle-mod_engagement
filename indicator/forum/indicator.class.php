@@ -109,9 +109,9 @@ class indicator_forum extends indicator {
                                         WHERE target = 'discussion' AND action = 'viewed'";
                 }
             }
-            $query_sql = 'SELECT c.id, c.userid FROM (' . implode(' UNION ', $sql) . ') c WHERE c.course = :courseid AND c.time >= :startdate AND c.time <= :enddate';
+            $querysql = 'SELECT c.id, c.userid FROM (' . implode(' UNION ', $sql) . ') c WHERE c.course = :courseid AND c.time >= :startdate AND c.time <= :enddate';
             // read logs
-            $readposts = $DB->get_recordset_sql($query_sql, $params);
+            $readposts = $DB->get_recordset_sql($querysql, $params);
         }
         if ($readposts) {
             foreach ($readposts as $read) {
@@ -175,53 +175,53 @@ class indicator_forum extends indicator {
                 $this->rawdata->posts[$userid]['read'] = 0;
             }   
             
-            $local_risk = $this->calculate('totalposts', $this->rawdata->posts[$userid]['total']);
-            $risk_contribution = $local_risk * $this->config['w_totalposts'];
+            $localrisk = $this->calculate('totalposts', $this->rawdata->posts[$userid]['total']);
+            $riskcontribution = $localrisk * $this->config['w_totalposts'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_totalposts']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_totalposts'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = "0% risk for more than {$this->config['no_totalposts']} posts a week. ".
                              "100% for {$this->config['max_totalposts']} posts a week.";
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $strtotalposts;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
-            $local_risk += $this->calculate('replies', $this->rawdata->posts[$userid]['replies']);
-            $risk_contribution = $local_risk * $this->config['w_replies'];
+            $localrisk += $this->calculate('replies', $this->rawdata->posts[$userid]['replies']);
+            $riskcontribution = $localrisk * $this->config['w_replies'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_replies']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_replies'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = "0% risk for more than {$this->config['no_replies']} replies a week. ".
                              "100% for {$this->config['max_replies']} replies a week.";
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $strreplies;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
-            $local_risk += $this->calculate('newposts', $this->rawdata->posts[$userid]['new']);
-            $risk_contribution = $local_risk * $this->config['w_newposts'];
+            $localrisk += $this->calculate('newposts', $this->rawdata->posts[$userid]['new']);
+            $riskcontribution = $localrisk * $this->config['w_newposts'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_newposts']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_newposts'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = "0% risk for more than {$this->config['no_newposts']} replies a week. ".
                              "100% for {$this->config['max_newposts']} new posts a week.";
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $strnewposts;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
-            $local_risk += $this->calculate('readposts', $this->rawdata->posts[$userid]['read']);
-            $risk_contribution = $local_risk * $this->config['w_readposts'];
+            $localrisk += $this->calculate('readposts', $this->rawdata->posts[$userid]['read']);
+            $riskcontribution = $localrisk * $this->config['w_readposts'];
             $reason = new stdClass();
-            $reason->weighting = intval($this->config['w_readposts']*100).'%';
-            $reason->localrisk = intval($local_risk*100).'%';
+            $reason->weighting = intval($this->config['w_readposts'] * 100).'%';
+            $reason->localrisk = intval($localrisk * 100).'%';
             $reason->logic = "0% risk for more than {$this->config['no_readposts']} read posts a week. ".
                              "100% for {$this->config['max_readposts']} read posts a week.";
-            $reason->riskcontribution = intval($risk_contribution*100).'%';
+            $reason->riskcontribution = intval($riskcontribution * 100).'%';
             $reason->title = $strreadposts;
             $reasons[] = $reason;
-            $risk += $risk_contribution;
+            $risk += $riskcontribution;
 
             $info = new stdClass();
             $info->risk = $risk;
@@ -288,54 +288,54 @@ class indicator_forum extends indicator {
             $data[$userid] = array();
         }
         
-        // Collect and process data
+        // Collect and process data.
         foreach ($this->rawdata->posts as $userid => $record) {
             if (array_key_exists($userid, $data)) {
-                $data[$userid]['total'] = $record['total']; // total postings (not readings)
+                $data[$userid]['total'] = $record['total']; // Total postings (not readings).
                 $data[$userid]['new'] = $record['new'];
                 $data[$userid]['replies'] = $record['replies'];
                 $data[$userid]['read'] = $record['read'];
             }
         }
         
-        // Parse for display
-        $return_columns = array();
-        // Column for risk
-        $return_column = array();
-        $return_column['header'] = get_string('report_forum_risk', 'engagementindicator_forum');
-        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-        $return_column['display'] = array();
+        // Parse for display.
+        $returncolumns = array();
+        // Column for risk.
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_forum_risk', 'engagementindicator_forum');
+        $returncolumn['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+            $returncolumn['display'][$userid] = '<div><span class="report_engagement_display">'.
                 sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
                 '</span></div>';
         }
-        $return_columns[] = $return_column;
-        // Column for read posts
-        $return_column = array();
-        $return_column['header'] = get_string('report_readposts', 'engagementindicator_forum');
-        $return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
-        $return_column['display'] = array();
+        $returncolumns[] = $returncolumn;
+        // Column for read posts.
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_readposts', 'engagementindicator_forum');
+        $returncolumn['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+            $returncolumn['display'][$userid] = '<div><span class="report_engagement_display">'.
                 (isset($record['read']) ? $record['read'] : '').
                 '</span></div>';
         }
-        $return_columns[] = $return_column;
-        // Column for number posted
-        $return_column = array();
-        $return_column['header'] = get_string('report_posted', 'engagementindicator_forum');
-        $return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
-        $return_column['display'] = array();
+        $returncolumns[] = $returncolumn;
+        // Column for number posted.
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_posted', 'engagementindicator_forum');
+        $returncolumn['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+            $returncolumn['display'][$userid] = '<div><span class="report_engagement_display">'.
                 (isset($record['total']) ? $record['total'] : '').
                 '</span></div>';
         }
-        $return_columns[] = $return_column;
+        $returncolumns[] = $returncolumn;
         
         // Return
-        return $return_columns;
+        return $returncolumns;
         
     }
     

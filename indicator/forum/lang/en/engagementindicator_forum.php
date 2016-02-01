@@ -59,14 +59,14 @@ contributes towards the overall risk for the Forum indicator.
 The local risk will be multiplied by this to form the risk
 contribution.';
 
-// Mailer report
+// Mailer report.
 $string['report_forum_risk'] = 'Forum risk';
 $string['report_readposts'] = 'Posts read';
 $string['report_posted'] = 'Posted';
 $string['mailer_checkbox_column_header'] = 'Forum'; // Keep this short
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their forum activity. Their forum metrics are outlined in columns to the right.';
 
-// default snippet strings
+// Default snippet strings.
 $string['defaultsnippet0'] = "The online discussion forum is an important component of this course and your participation is necessary.";
 $string['defaultsnippet1'] = "The online discussion forums are a great place to ask questions and get help for this unit.";
 $string['defaultsnippet2'] = "Remember that participating in the online discussion forum is an assessable component of this unit.";

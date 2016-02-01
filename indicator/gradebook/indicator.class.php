@@ -38,8 +38,8 @@ class indicator_gradebook extends indicator {
      */
     protected function get_rawdata($startdate, $enddate) {
         global $CFG, $DB, $COURSE;
-        // consider:? https://github.com/moodle/moodle/blob/d3ff82257e91d7d4157f16d53d63cf45e4253309/lib/grade/constants.php
-        // consider:? https://docs.moodle.org/27/en/Category_aggregation
+        // Consider:? https://github.com/moodle/moodle/blob/d3ff82257e91d7d4157f16d53d63cf45e4253309/lib/grade/constants.php
+        // Consider:? https://docs.moodle.org/27/en/Category_aggregation
         
         require_once($CFG->libdir.'/gradelib.php');
         
@@ -90,12 +90,13 @@ class indicator_gradebook extends indicator {
         
         $risks = array();
         
-        // Workaround if showing user risk instead of course risk (since parent class doesn't allow this to be handled well)
+        // Workaround if showing user risk instead of course risk 
+        // (since parent class doesn't allow this to be handled well).
         if (empty($this->rawdata) || $this->userarray == null) {
             $this->userarray = $userids;
             $this->rawdata = $this->get_rawdata($this->startdate, $this->enddate);
         }        
-        // Determine which grade items are enabled
+        // Determine which grade items are enabled.
         $gradeitems = array();
         foreach ($this->config as $key => $value) {
             if (substr($key, 0, strlen("gradeitem_enabled_")) === "gradeitem_enabled_") {
@@ -140,7 +141,7 @@ class indicator_gradebook extends indicator {
     private function calculate_risk($gradeitemid, &$risk, $comparator, $usergrade, $thresholdgrade, $weighting) {
         global $DB, $COURSE;
         
-        $reason = new stdClass(); //weighting, localrisk, logic, riskcontribution, title
+        $reason = new stdClass(); // Properties: weighting, localrisk, logic, riskcontribution, title.
         $triggered = false;
         $usergrade = sprintf("%.2f", $usergrade);
         
@@ -152,62 +153,77 @@ class indicator_gradebook extends indicator {
             case 'gt':
                 if ($usergrade > $thresholdgrade) {
                     $risk += $weighting;
-                    $reason->logic = $giv.$usergrade.get_string('gt', 'engagementindicator_gradebook').$thresholdgrade.$atrisk;
+                    $reason->logic = $giv.$usergrade.get_string('gt', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$atrisk;
                     $triggered = true;
                 } else {
-                    $reason->logic = $giv.$usergrade.get_string('notgt', 'engagementindicator_gradebook').$thresholdgrade.$notatrisk;
+                    $reason->logic = $giv.$usergrade.get_string('notgt', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$notatrisk;
                 }
                 break;
             case 'gte':
                 if ($usergrade >= $thresholdgrade) {
                     $risk += $weighting;
-                    $reason->logic = $giv.$usergrade.get_string('gte', 'engagementindicator_gradebook').$thresholdgrade.$atrisk;
+                    $reason->logic = $giv.$usergrade.get_string('gte', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$atrisk;
                     $triggered = true;
                 } else {
-                    $reason->logic = $giv.$usergrade.get_string('notgte', 'engagementindicator_gradebook').$thresholdgrade.$notatrisk;
+                    $reason->logic = $giv.$usergrade.get_string('notgte', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$notatrisk;
                 }
                 break;
             case 'lt':
                 if ($usergrade < $thresholdgrade) {
                     $risk += $weighting;
-                    $reason->logic = $giv.$usergrade.get_string('lt', 'engagementindicator_gradebook').$thresholdgrade.$atrisk;
+                    $reason->logic = $giv.$usergrade.get_string('lt', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$atrisk;
                     $triggered = true;
                 } else {
-                    $reason->logic = $giv.$usergrade.get_string('notlt', 'engagementindicator_gradebook').$thresholdgrade.$notatrisk;
+                    $reason->logic = $giv.$usergrade.get_string('notlt', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$notatrisk;
                 }
                 break;
             case 'lte':
                 if ($usergrade <= $thresholdgrade) {
                     $risk += $weighting;
-                    $reason->logic = $giv.$usergrade.get_string('lte', 'engagementindicator_gradebook').$thresholdgrade.$atrisk;
+                    $reason->logic = $giv.$usergrade.get_string('lte', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$atrisk;
                     $triggered = true;
                 } else {
-                    $reason->logic = $giv.$usergrade.get_string('notlte', 'engagementindicator_gradebook').$thresholdgrade.$notatrisk;
+                    $reason->logic = $giv.$usergrade.get_string('notlte', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$notatrisk;
                 }
                 break;
             case 'eq':
                 if ($usergrade == $thresholdgrade) {
                     $risk += $weighting;
-                    $reason->logic = $giv.$usergrade.get_string('eq', 'engagementindicator_gradebook').$thresholdgrade.$atrisk;
+                    $reason->logic = $giv.$usergrade.get_string('eq', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$atrisk;
                     $triggered = true;
                 } else {
-                    $reason->logic = $giv.$usergrade.get_string('neq', 'engagementindicator_gradebook').$thresholdgrade.$notatrisk;
+                    $reason->logic = $giv.$usergrade.get_string('neq', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$notatrisk;
                 }
                 break;
             case 'neq':
                 if ($usergrade != $thresholdgrade) {
                     $risk += $weighting;
-                    $reason->logic = $giv.$usergrade.get_string('neq', 'engagementindicator_gradebook').$thresholdgrade.$atrisk;
+                    $reason->logic = $giv.$usergrade.get_string('neq', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$atrisk;
                     $triggered = true;
                 } else {
-                    $reason->logic = $giv.$usergrade.get_string('notneq', 'engagementindicator_gradebook').$thresholdgrade.$notatrisk;
+                    $reason->logic = $giv.$usergrade.get_string('notneq', 'engagementindicator_gradebook')
+                        .$thresholdgrade.$notatrisk;
                 }
                 break;
         }
         
         $reason->weighting = sprintf("%d%%", $weighting * 100);
         $reason->localrisk = sprintf("%d%%", $weighting * 100);
-        $gradeitems = $DB->get_records_sql("SELECT * FROM {grade_items} WHERE courseid = $COURSE->id ORDER BY sortorder");
+        $gradeitems = $DB->get_records_sql("SELECT * 
+                                              FROM {grade_items} 
+                                             WHERE courseid = $COURSE->id 
+                                          ORDER BY sortorder");
         $reason->title = $gradeitems[$gradeitemid]->itemname;
         if ($triggered) {
             $reason->riskcontribution = sprintf("%d%%", $weighting * 100);
@@ -232,7 +248,7 @@ class indicator_gradebook extends indicator {
             $data[$userid] = array();
         }
         
-        // Collect and process data
+        // Collect and process data.
         foreach ($this->userarray as $userid) {
             $obj = $risks[$userid];
             $data[$userid]['risk'] = $obj->risk;
@@ -245,52 +261,52 @@ class indicator_gradebook extends indicator {
             }
         }
         
-        // Parse for display
-        $return_columns = array();
-        // Column for risk
-        $return_column = array();
-        $return_column['header'] = get_string('report_gradebook_risk', 'engagementindicator_gradebook');
-        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-        $return_column['display'] = array();
+        // Parse for display.
+        $returncolumns = array();
+        // Column for risk.
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_gradebook_risk', 'engagementindicator_gradebook');
+        $returncolumn['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+            $returncolumn['display'][$userid] = '<div><span class="report_engagement_display">'.
                 sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
                 '</span></div>';
         }
-        $return_columns[] = $return_column;
-        // Column for triggered
-        $return_column = array();
-        $return_column['header'] = get_string('report_gradebook_triggered', 'engagementindicator_gradebook');
-        $return_column['filterable'] = True;
-        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-        $return_column['display'] = array();
+        $returncolumns[] = $returncolumn;
+        // Column for triggered.
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_gradebook_triggered', 'engagementindicator_gradebook');
+        $returncolumn['filterable'] = True;
+        $returncolumn['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div>'.
+            $returncolumn['display'][$userid] = '<div>'.
                 '<span class="report_engagement_display">'.(isset($record['triggeredby']) ? count($record['triggeredby']) : 0).'</span>';
             if (isset($record['triggeredby'])) {
-                $return_column['display'][$userid] .= "<div class='report_engagement_detail'>".implode('<br />', $record['triggeredby'])."</div>";
+                $returncolumn['display'][$userid] .= "<div class='report_engagement_detail'>".implode('<br />', $record['triggeredby'])."</div>";
             }
-            $return_column['display'][$userid] .= '</div>';
+            $returncolumn['display'][$userid] .= '</div>';
         }
-        $return_columns[] = $return_column;
-        // Column for not triggered
-        $return_column = array();
-        $return_column['header'] = get_string('report_gradebook_nottriggered', 'engagementindicator_gradebook');
-        $return_column['filterable'] = True;
-        $return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
-        $return_column['display'] = array();
+        $returncolumns[] = $returncolumn;
+        // Column for not triggered.
+        $returncolumn = array();
+        $returncolumn['header'] = get_string('report_gradebook_nottriggered', 'engagementindicator_gradebook');
+        $returncolumn['filterable'] = True;
+        $returncolumn['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter.
+        $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
-            $return_column['display'][$userid] = '<div>'.
+            $returncolumn['display'][$userid] = '<div>'.
                 '<span class="report_engagement_display">'.(isset($record['nottriggeredby']) ? count($record['nottriggeredby']) : 0).'</span>';
             if (isset($record['nottriggeredby'])) {
                 "<div class='report_engagement_detail'>".implode('<br />', $record['nottriggeredby'])."</div>";
             }
-            $return_column['display'][$userid] .= '</div>';
+            $returncolumn['display'][$userid] .= '</div>';
         }
-        $return_columns[] = $return_column;
+        $returncolumns[] = $returncolumn;
         
-        // Return
-        return $return_columns;
+        // Return.
+        return $returncolumns;
         
     }
     

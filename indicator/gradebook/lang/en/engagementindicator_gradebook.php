@@ -33,7 +33,7 @@ $string['group_gradeitem'] = 'Gradebook item';
 $string['group_gradeitem_help'] = 'Tick the checkbox to count this gradebook item in the calculations for this indicator. Then, specify the comparison operator, the condition to compare against, and the weighting (number between 0-100) to add to the risk rating if the comparison holds true. For example, if this is set to "less than" and "5", if the record for a student for this grade item is 4, then this grade item will trigger and contribute the specified weighting to the risk rating for this indicator.';
 $string['gradeitem_enabled'] = 'Include {$a} in calculating risk';
 
-// Errors
+// Errors.
 $string['weightingsumonehundred'] = "Weightings for Gradebook indicator must sum to 100";
 
 // Renderer.
@@ -57,14 +57,14 @@ $string['neq'] = " not equal to ";
 $string['neq'] = " not not equal to ";
 $string['gradeitem_out_of'] = 'out of {$a}';
 
-// Mailer report
+// Mailer report.
 $string['report_gradebook_risk'] = 'Gradebook risk';
 $string['report_gradebook_triggered'] = 'Triggered';
 $string['report_gradebook_nottriggered'] = 'Not triggered';
 $string['mailer_checkbox_column_header'] = 'Grades'; // Keep this short
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their gradebook data. The data from gradebook items selected in the settings screen are outlined in columns to the right.';
 
-// default snippet strings
+// Default snippet strings.
 $string['defaultsnippet0'] = "Given your grades so far, I am concerned that you have not been keeping up with this unit.";
 $string['defaultsnippet1'] = "It is very important that you seek additional assistance to help improve your grade.";
 $string['defaultsnippet2'] = "There is some challenging work ahead in this unit, so don’t hesitate to ask questions or seek our help.";

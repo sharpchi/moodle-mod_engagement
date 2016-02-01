@@ -33,7 +33,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 function engagementindicator_login_process_edit_form($data) {
     $configdata = array();
-    $elements = array('loginspastweek' => 1, 'loginsperweek' => 1, 'avgsessionlength' => 60, 'timesincelast' => 86400); // user to set some settings as days, minutes; save all as seconds
+    $elements = array('loginspastweek' => 1, 
+        'loginsperweek' => 1, 
+        'avgsessionlength' => 60, 
+        'timesincelast' => 86400); // User to set some settings as days, minutes; save all as seconds.
     foreach ($elements as $element => $multiplier) {
         if (isset($data->{"login_e_$element"})) {
             $configdata["login_e_$element"] = $data->{"login_e_$element"} * $multiplier;
@@ -43,7 +46,7 @@ function engagementindicator_login_process_edit_form($data) {
         }
     }
     if (isset($data->{"login_session_length"})) {
-        $configdata["login_session_length"] = $data->{"login_session_length"} * 60; // user to set session length in minutes, save as seconds
+        $configdata["login_session_length"] = $data->{"login_session_length"} * 60; // User to set session length in minutes, save as seconds.
     }
 
     return $configdata;
@@ -58,7 +61,10 @@ function engagementindicator_login_process_edit_form($data) {
  */
 function engagementindicator_login_preprocess_configdata_for_edit_form($configdata) {
     
-    $elements = array('loginspastweek' => 1, 'loginsperweek' => 1, 'avgsessionlength' => 60, 'timesincelast' => 86400); // user to set some settings as days, minutes; save all as seconds
+    $elements = array('loginspastweek' => 1, 
+        'loginsperweek' => 1, 
+        'avgsessionlength' => 60, 
+        'timesincelast' => 86400); // User to set some settings as days, minutes; save all as seconds.
     foreach ($configdata as $setting => $value) {
         if (strpos($setting, 'login_e_') !== FALSE) {
             $configdata[$setting] = $value / $elements[substr($setting, 8)];
