@@ -48,7 +48,7 @@ class engagementindicator_login_thresholds_form {
             $grouparray[] =& $mform->createElement('static', '', '', '%');
             $mform->addGroup($grouparray, "group_$element", get_string("e$element", "engagementindicator_login"), '&nbsp;',
                 false);
-			$mform->addHelpButton("group_$element", "e$element", 'engagementindicator_login');
+            $mform->addHelpButton("group_$element", "e$element", 'engagementindicator_login');
             $mform->setDefault("login_e_$element", $defaults["e_$element"]);
             $mform->setDefault("login_w_$element", $defaults["w_$element"]*100);
             $mform->setType("login_e_$element", PARAM_FLOAT);
@@ -57,7 +57,7 @@ class engagementindicator_login_thresholds_form {
 
         $mform->addElement('text', 'login_session_length', get_string('sessionlength', 'engagementindicator_login'),
             array('size' => 5));
-		$mform->addHelpButton('login_session_length', 'sessionlength', 'engagementindicator_login');
+        $mform->addHelpButton('login_session_length', 'sessionlength', 'engagementindicator_login');
         $mform->setDefault("login_session_length", $defaults["session_length"]);
         $mform->setType('login_session_length', PARAM_INT);
     }

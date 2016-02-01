@@ -80,8 +80,8 @@ class indicator_forum extends indicator {
             }
             $postrecs->close();
         }
-		
-		// Try fetching from forum_read table first
+        
+        // Try fetching from forum_read table first
         $sql = "SELECT *
                 FROM {forum_read} fr
                 JOIN {forum} f ON (f.id = fr.forumid)
@@ -90,29 +90,29 @@ class indicator_forum extends indicator {
         $params['courseid'] = $this->courseid;
         $params['startdate'] = $startdate;
         $params['enddate'] = $enddate;
-		$readposts = $DB->get_recordset_sql($sql, $params);
-		// Check if there is any data in forum_read table
-		if (!$readposts->valid()) {
-			// If not, fetch data from logs
-			// set the sql based on log reader(s) available
-			$sql = array();
-			$logmanager = get_log_manager();
-			$readers = $logmanager->get_readers(); 
-			foreach ($readers as $reader) {
-				if ($reader instanceof \logstore_legacy\log\store) {
-					$sql['legacy'] = "SELECT id, userid, time, course
-										FROM {log}
-										WHERE module = 'forum' AND action = 'view discussion'";
-				} else if ($reader instanceof \logstore_standard\log\store) {
-					$sql['standard'] = "SELECT id, userid, timecreated AS time, courseid AS course
-										FROM {logstore_standard_log}
-										WHERE target = 'discussion' AND action = 'viewed'";
-				}
-			}
-			$query_sql = 'SELECT c.id, c.userid FROM (' . implode(' UNION ', $sql) . ') c WHERE c.course = :courseid AND c.time >= :startdate AND c.time <= :enddate';
-			// read logs
-			$readposts = $DB->get_recordset_sql($query_sql, $params);
-		}
+        $readposts = $DB->get_recordset_sql($sql, $params);
+        // Check if there is any data in forum_read table
+        if (!$readposts->valid()) {
+            // If not, fetch data from logs
+            // set the sql based on log reader(s) available
+            $sql = array();
+            $logmanager = get_log_manager();
+            $readers = $logmanager->get_readers(); 
+            foreach ($readers as $reader) {
+                if ($reader instanceof \logstore_legacy\log\store) {
+                    $sql['legacy'] = "SELECT id, userid, time, course
+                                        FROM {log}
+                                        WHERE module = 'forum' AND action = 'view discussion'";
+                } else if ($reader instanceof \logstore_standard\log\store) {
+                    $sql['standard'] = "SELECT id, userid, timecreated AS time, courseid AS course
+                                        FROM {logstore_standard_log}
+                                        WHERE target = 'discussion' AND action = 'viewed'";
+                }
+            }
+            $query_sql = 'SELECT c.id, c.userid FROM (' . implode(' UNION ', $sql) . ') c WHERE c.course = :courseid AND c.time >= :startdate AND c.time <= :enddate';
+            // read logs
+            $readposts = $DB->get_recordset_sql($query_sql, $params);
+        }
         if ($readposts) {
             foreach ($readposts as $read) {
                 if (!isset($posts[$read->userid])) {
@@ -160,21 +160,21 @@ class indicator_forum extends indicator {
                 $risks[$userid] = $info;
                 continue;
             }
-			
-			// Add missing data if necessary.
-			if (empty($this->rawdata->posts[$userid]['total'])) {
-				$this->rawdata->posts[$userid]['total'] = 0;
-			}   
-			if (empty($this->rawdata->posts[$userid]['replies'])) {
-				$this->rawdata->posts[$userid]['replies'] = 0;
-			}   
-			if (empty($this->rawdata->posts[$userid]['new'])) {
-				$this->rawdata->posts[$userid]['new'] = 0;
-			}   
-			if (empty($this->rawdata->posts[$userid]['read'])) {
-				$this->rawdata->posts[$userid]['read'] = 0;
-			}   
-			
+            
+            // Add missing data if necessary.
+            if (empty($this->rawdata->posts[$userid]['total'])) {
+                $this->rawdata->posts[$userid]['total'] = 0;
+            }   
+            if (empty($this->rawdata->posts[$userid]['replies'])) {
+                $this->rawdata->posts[$userid]['replies'] = 0;
+            }   
+            if (empty($this->rawdata->posts[$userid]['new'])) {
+                $this->rawdata->posts[$userid]['new'] = 0;
+            }   
+            if (empty($this->rawdata->posts[$userid]['read'])) {
+                $this->rawdata->posts[$userid]['read'] = 0;
+            }   
+            
             $local_risk = $this->calculate('totalposts', $this->rawdata->posts[$userid]['total']);
             $risk_contribution = $local_risk * $this->config['w_totalposts'];
             $reason = new stdClass();
@@ -278,65 +278,65 @@ class indicator_forum extends indicator {
         $settings['max_readposts'] = 0;
         return $settings;
     }
-	
-	public function get_data_for_mailer() {
-		
-		$risks = $this->get_course_risks();
-		$data = array();
-		
-		foreach ($this->userarray as $userid) {
-			$data[$userid] = array();
-		}
-		
-		// Collect and process data
-		foreach ($this->rawdata->posts as $userid => $record) {
-			if (array_key_exists($userid, $data)) {
-				$data[$userid]['total'] = $record['total']; // total postings (not readings)
-				$data[$userid]['new'] = $record['new'];
-				$data[$userid]['replies'] = $record['replies'];
-				$data[$userid]['read'] = $record['read'];
-			}
-		}
-		
-		// Parse for display
-		$return_columns = array();
-		// Column for risk
-		$return_column = array();
-		$return_column['header'] = get_string('report_forum_risk', 'engagementindicator_forum');
-		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-		$return_column['display'] = array();
-		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
-				sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
-				'</span></div>';
-		}
-		$return_columns[] = $return_column;
-		// Column for read posts
-		$return_column = array();
-		$return_column['header'] = get_string('report_readposts', 'engagementindicator_forum');
-		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
-		$return_column['display'] = array();
-		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
-				(isset($record['read']) ? $record['read'] : '').
-				'</span></div>';
-		}
-		$return_columns[] = $return_column;
-		// Column for number posted
-		$return_column = array();
-		$return_column['header'] = get_string('report_posted', 'engagementindicator_forum');
-		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
-		$return_column['display'] = array();
-		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
-				(isset($record['total']) ? $record['total'] : '').
-				'</span></div>';
-		}
-		$return_columns[] = $return_column;
-		
-		// Return
-		return $return_columns;
-		
-	}
-	
+    
+    public function get_data_for_mailer() {
+        
+        $risks = $this->get_course_risks();
+        $data = array();
+        
+        foreach ($this->userarray as $userid) {
+            $data[$userid] = array();
+        }
+        
+        // Collect and process data
+        foreach ($this->rawdata->posts as $userid => $record) {
+            if (array_key_exists($userid, $data)) {
+                $data[$userid]['total'] = $record['total']; // total postings (not readings)
+                $data[$userid]['new'] = $record['new'];
+                $data[$userid]['replies'] = $record['replies'];
+                $data[$userid]['read'] = $record['read'];
+            }
+        }
+        
+        // Parse for display
+        $return_columns = array();
+        // Column for risk
+        $return_column = array();
+        $return_column['header'] = get_string('report_forum_risk', 'engagementindicator_forum');
+        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
+        $return_column['display'] = array();
+        foreach ($data as $userid => $record) {
+            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+                sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
+                '</span></div>';
+        }
+        $return_columns[] = $return_column;
+        // Column for read posts
+        $return_column = array();
+        $return_column['header'] = get_string('report_readposts', 'engagementindicator_forum');
+        $return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
+        $return_column['display'] = array();
+        foreach ($data as $userid => $record) {
+            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+                (isset($record['read']) ? $record['read'] : '').
+                '</span></div>';
+        }
+        $return_columns[] = $return_column;
+        // Column for number posted
+        $return_column = array();
+        $return_column['header'] = get_string('report_posted', 'engagementindicator_forum');
+        $return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
+        $return_column['display'] = array();
+        foreach ($data as $userid => $record) {
+            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+                (isset($record['total']) ? $record['total'] : '').
+                '</span></div>';
+        }
+        $return_columns[] = $return_column;
+        
+        // Return
+        return $return_columns;
+        
+    }
+    
 }

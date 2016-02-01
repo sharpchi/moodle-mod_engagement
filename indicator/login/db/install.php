@@ -23,9 +23,9 @@ function xmldb_engagementindicator_login_install() {
         $indicator->visible = 1;
         $DB->insert_record('engagement_indicator', $indicator);
     }
-	
-	// Populate DB with snippets
-	require_once(dirname(__FILE__).'/../../../locallib.php');
-	engagementindicator_populate_snippets_from_lang('login');
-	
+    
+    // Populate DB with snippets
+    require_once(dirname(__FILE__).'/../../../locallib.php');
+    engagementindicator_populate_snippets_from_lang('login');
+    
 }

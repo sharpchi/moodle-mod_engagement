@@ -29,9 +29,9 @@ require_once(dirname(__FILE__).'/../indicator.class.php');
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 
 class indicator_assessment extends indicator {
-	
-	private $sumgrades = 0;
-	
+    
+    private $sumgrades = 0;
+    
     /**
      * get_risk_for_users_users
      *
@@ -75,14 +75,14 @@ class indicator_assessment extends indicator {
                 case 'quiz':
                     $this->add_quizzes($items);
                     break;
-				case 'turnitintool':
+                case 'turnitintool':
                     $this->add_turnitin($items);
                     break;
             }
         }
 
         $rawdata->assessments = $this->calculator->as_object();
-		$rawdata->sumgrades = $this->sumgrades;
+        $rawdata->sumgrades = $this->sumgrades;
         return $rawdata;
     }
 
@@ -97,39 +97,39 @@ class indicator_assessment extends indicator {
 
     private function add_turnitin($grade_items) {
         global $DB;
-	
-		$submissions = array();
-		foreach ($grade_items as $gi) {
-			$t_assignment_ids[$gi->iteminstance] = $gi;
-			$submissions[$gi->iteminstance] = array();
-		}
-		
-		list($insql, $params) = $DB->get_in_or_equal(array_keys($t_assignment_ids));
-		
-		$t_assignments = $DB->get_records_sql("SELECT b.turnitintoolid, b.dtdue, a.name 
-												FROM {turnitintool_parts} b JOIN {turnitintool} a ON (a.id = b.turnitintoolid) 
-												WHERE b.turnitintoolid $insql", $params);
-		
-		// Collect up the turnitin submissions.
-		$t_subs = $DB->get_records_sql("SELECT e.id, e.userid, e.turnitintoolid, e.submission_modified, b.dtdue 
-										FROM {turnitintool_submissions} e JOIN {turnitintool_parts} b ON (e.turnitintoolid = b.turnitintoolid)
-										JOIN {turnitintool} a ON (a.id = e.turnitintoolid) 
-										WHERE e.turnitintoolid $insql 
-											AND e.submission_status = 'Submission successfully uploaded to Turnitin.'", $params);
-		
-		foreach ($t_subs as $s) {
-			$submissions[$s->turnitintoolid][$s->userid]['submitted'] = $s->submission_modified;
-			$submissions[$s->turnitintoolid][$s->userid]['due'] = $s->dtdue;
-		}
-		// Finally add the assessment details into the calculator.
+    
+        $submissions = array();
+        foreach ($grade_items as $gi) {
+            $t_assignment_ids[$gi->iteminstance] = $gi;
+            $submissions[$gi->iteminstance] = array();
+        }
+        
+        list($insql, $params) = $DB->get_in_or_equal(array_keys($t_assignment_ids));
+        
+        $t_assignments = $DB->get_records_sql("SELECT b.turnitintoolid, b.dtdue, a.name 
+                                                FROM {turnitintool_parts} b JOIN {turnitintool} a ON (a.id = b.turnitintoolid) 
+                                                WHERE b.turnitintoolid $insql", $params);
+        
+        // Collect up the turnitin submissions.
+        $t_subs = $DB->get_records_sql("SELECT e.id, e.userid, e.turnitintoolid, e.submission_modified, b.dtdue 
+                                        FROM {turnitintool_submissions} e JOIN {turnitintool_parts} b ON (e.turnitintoolid = b.turnitintoolid)
+                                        JOIN {turnitintool} a ON (a.id = e.turnitintoolid) 
+                                        WHERE e.turnitintoolid $insql 
+                                            AND e.submission_status = 'Submission successfully uploaded to Turnitin.'", $params);
+        
+        foreach ($t_subs as $s) {
+            $submissions[$s->turnitintoolid][$s->userid]['submitted'] = $s->submission_modified;
+            $submissions[$s->turnitintoolid][$s->userid]['due'] = $s->dtdue;
+        }
+        // Finally add the assessment details into the calculator.
         foreach ($t_assignments as $a) {
             $grademax = $t_assignment_ids[$a->turnitintoolid]->grademax;
             $this->calculator->add_assessment($grademax, $submissions[$a->turnitintoolid], get_string('modulename', 'turnitintool').": {$a->name}", $a->dtdue);
-			// only add grademax for this into sumgrades
-			$this->sumgrades += $grademax;
+            // only add grademax for this into sumgrades
+            $this->sumgrades += $grademax;
         }
     }
-	
+    
     private function add_assignments($grade_items) {
         global $DB;
 
@@ -160,8 +160,8 @@ class indicator_assessment extends indicator {
         foreach ($assignments as $a) {
             $grademax = $assignment_ids[$a->id]->grademax;
             $this->calculator->add_assessment($grademax, $submissions[$a->id], get_string('modulename', 'assign').": {$a->name}", $a->duedate);
-			// only add grademax for this assignment into sumgrades if submissions are allowed
-			$this->sumgrades += $grademax;
+            // only add grademax for this assignment into sumgrades if submissions are allowed
+            $this->sumgrades += $grademax;
         }
     }
 
@@ -196,8 +196,8 @@ class indicator_assessment extends indicator {
         foreach ($assignments as $a) {
             $grademax = $assignment_ids[$a->id]->grademax;
             $this->calculator->add_assessment($grademax, $submissions[$a->id], get_string('modulename', 'assignment').": {$a->name}", $a->timedue);
-			// only add grademax for this assignment into sumgrades if submissions are allowed
-			$this->sumgrades += $grademax;
+            // only add grademax for this assignment into sumgrades if submissions are allowed
+            $this->sumgrades += $grademax;
         }
     }
 
@@ -280,8 +280,8 @@ class indicator_assessment extends indicator {
         }
         foreach ($quizzes as $q) {
             $grademax = $quiz_ids[$q->id]->grademax;
-			// add grademax to sumgrades
-			$this->sumgrades += $grademax;
+            // add grademax to sumgrades
+            $this->sumgrades += $grademax;
             // Process user overrides for this quiz.
 
             $this->calculator->add_assessment($grademax, $submissions[$q->id], get_string('modulename', 'quiz').': ' . $q->name, $q->timeclose);
@@ -310,97 +310,97 @@ class indicator_assessment extends indicator {
 
         return $settings;
     }
-	
-	public function get_data_for_mailer() {
-		
-		$risks = $this->get_course_risks();
-		$data = array();
-		
-		foreach ($this->userarray as $userid) {
-			$data[$userid] = array(
-				'numbersubmissions' => null,
-				'numberoverduesubmitted' => null,
-				'totallateinterval' => null,
-				'numberoverduenotsubmitted' => null,
-				'overdueassessments' => null
-			);
-		}
-		
-		// Collect and process data
-		foreach ($this->rawdata->assessments as $assessment) {
-			foreach ($this->userarray as $userid) {
-				$submittime = isset($assessment->submissions[$userid]['submitted']) ? $assessment->submissions[$userid]['submitted'] : PHP_INT_MAX;
-				$timedue = isset($assessment->submissions[$userid]['due']) ? $assessment->submissions[$userid]['due'] : 1;
-				$interval = $submittime - $timedue;
-				if (isset($assessment->submissions[$userid]['submitted'])) {
-					$data[$userid]['numbersubmissions'] += 1;
-					if ($interval > 0) {
-						$data[$userid]['numberoverduesubmitted'] += 1;
-						$data[$userid]['totallateinterval'] += $interval;
-					}
-				} else if ($assessment->due > time()) {
-					// Not due yet
-				} else {
-					$data[$userid]['numberoverduenotsubmitted'] += 1;
-					$data[$userid]['overdueassessments'][] = $assessment->description;
-				}
-			}
-		}
-		
-		// Parse for display
-		$return_columns = array();
-		// Column for risk
-		$return_column = array();
-		$return_column['header'] = get_string('report_assessment_risk', 'engagementindicator_assessment');
-		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-		$return_column['display'] = array();
-		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
-				sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
-				'</span></div>';
-		}
-		$return_columns[] = $return_column;
-		// Column for number overdue
-		$return_column = array();
-		$return_column['header'] = get_string('report_assessment_overdue', 'engagementindicator_assessment');
-		$return_column['filterable'] = True;
-		$return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
-		$return_column['display'] = array();
-		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<div>'.
-				'<span class="report_engagement_display">'.$record['numberoverduenotsubmitted'].'</span>';
-			if (!is_null($record['overdueassessments'])) {
-				$return_column['display'][$userid] .= '<div class="report_engagement_detail">'.implode('<br />', $record['overdueassessments']).'</div><br />';
-			}
-			$return_column['display'][$userid] .= '</div>';
-		}
-		$return_columns[] = $return_column;
-		// Column for number submitted
-		$return_column = array();
-		$return_column['header'] = get_string('report_assessment_submitted', 'engagementindicator_assessment');
-		$return_column['filterable'] = True;
-		$return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
-		$return_column['display'] = array();
-		foreach ($data as $userid => $record) {
-			$return_column['display'][$userid] = '<div>'.
-				'<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>';
-			if (!is_null($record['numbersubmissions']) && $record['numbersubmissions'] != 0) {
-				$ov = new stdClass();
-				$ov->o = $record['numberoverduesubmitted'] ? $record['numberoverduesubmitted'] : 0;
-				$ov->v = sprintf("%0.1f", ($record['totallateinterval'] / 60 / 60 / 24) / $record['numbersubmissions']);
-				$return_column['display'][$userid] .= "<div class='report_engagement_detail'>".
-					get_string('report_assessment_overduelate', 'engagementindicator_assessment', $ov).
-					"</div>";
-			}
-			$return_column['display'][$userid] .= '</div>';
-		}
-		$return_columns[] = $return_column;
-		
-		// Return
-		return $return_columns;
-		
-	}
-	
+    
+    public function get_data_for_mailer() {
+        
+        $risks = $this->get_course_risks();
+        $data = array();
+        
+        foreach ($this->userarray as $userid) {
+            $data[$userid] = array(
+                'numbersubmissions' => null,
+                'numberoverduesubmitted' => null,
+                'totallateinterval' => null,
+                'numberoverduenotsubmitted' => null,
+                'overdueassessments' => null
+            );
+        }
+        
+        // Collect and process data
+        foreach ($this->rawdata->assessments as $assessment) {
+            foreach ($this->userarray as $userid) {
+                $submittime = isset($assessment->submissions[$userid]['submitted']) ? $assessment->submissions[$userid]['submitted'] : PHP_INT_MAX;
+                $timedue = isset($assessment->submissions[$userid]['due']) ? $assessment->submissions[$userid]['due'] : 1;
+                $interval = $submittime - $timedue;
+                if (isset($assessment->submissions[$userid]['submitted'])) {
+                    $data[$userid]['numbersubmissions'] += 1;
+                    if ($interval > 0) {
+                        $data[$userid]['numberoverduesubmitted'] += 1;
+                        $data[$userid]['totallateinterval'] += $interval;
+                    }
+                } else if ($assessment->due > time()) {
+                    // Not due yet
+                } else {
+                    $data[$userid]['numberoverduenotsubmitted'] += 1;
+                    $data[$userid]['overdueassessments'][] = $assessment->description;
+                }
+            }
+        }
+        
+        // Parse for display
+        $return_columns = array();
+        // Column for risk
+        $return_column = array();
+        $return_column['header'] = get_string('report_assessment_risk', 'engagementindicator_assessment');
+        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
+        $return_column['display'] = array();
+        foreach ($data as $userid => $record) {
+            $return_column['display'][$userid] = '<div><span class="report_engagement_display">'.
+                sprintf("%.0f", $risks[$userid]->{'risk'} * 100).
+                '</span></div>';
+        }
+        $return_columns[] = $return_column;
+        // Column for number overdue
+        $return_column = array();
+        $return_column['header'] = get_string('report_assessment_overdue', 'engagementindicator_assessment');
+        $return_column['filterable'] = True;
+        $return_column['heatmapdirection'] = 1; // 1 means normal sort i.e. higher numbers are darker
+        $return_column['display'] = array();
+        foreach ($data as $userid => $record) {
+            $return_column['display'][$userid] = '<div>'.
+                '<span class="report_engagement_display">'.$record['numberoverduenotsubmitted'].'</span>';
+            if (!is_null($record['overdueassessments'])) {
+                $return_column['display'][$userid] .= '<div class="report_engagement_detail">'.implode('<br />', $record['overdueassessments']).'</div><br />';
+            }
+            $return_column['display'][$userid] .= '</div>';
+        }
+        $return_columns[] = $return_column;
+        // Column for number submitted
+        $return_column = array();
+        $return_column['header'] = get_string('report_assessment_submitted', 'engagementindicator_assessment');
+        $return_column['filterable'] = True;
+        $return_column['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter
+        $return_column['display'] = array();
+        foreach ($data as $userid => $record) {
+            $return_column['display'][$userid] = '<div>'.
+                '<span class="report_engagement_display">'.$record['numbersubmissions'].'</span>';
+            if (!is_null($record['numbersubmissions']) && $record['numbersubmissions'] != 0) {
+                $ov = new stdClass();
+                $ov->o = $record['numberoverduesubmitted'] ? $record['numberoverduesubmitted'] : 0;
+                $ov->v = sprintf("%0.1f", ($record['totallateinterval'] / 60 / 60 / 24) / $record['numbersubmissions']);
+                $return_column['display'][$userid] .= "<div class='report_engagement_detail'>".
+                    get_string('report_assessment_overduelate', 'engagementindicator_assessment', $ov).
+                    "</div>";
+            }
+            $return_column['display'][$userid] .= '</div>';
+        }
+        $return_columns[] = $return_column;
+        
+        // Return
+        return $return_columns;
+        
+    }
+    
 }
 
 class assessment_risk_calculator {
@@ -417,7 +417,7 @@ class assessment_risk_calculator {
         $a->maxscore = $maxscore;
         $a->submissions = $submissions;
         $a->description = $description;
-		$a->due = $due;
+        $a->due = $due;
         $this->assessments[] = $a;
     }
 
@@ -437,7 +437,7 @@ class assessment_risk_calculator {
                 $reason->assessment = $a->description;
                 $submittime = isset($a->submissions[$uid]['submitted']) ? $a->submissions[$uid]['submitted'] : PHP_INT_MAX;
                 $timedue = isset($a->submissions[$uid]['due']) ? $a->submissions[$uid]['due'] : 1;
-				$num_days_late = ($submittime - $timedue) / DAYSECS;
+                $num_days_late = ($submittime - $timedue) / DAYSECS;
                 $days_late_weighting = ($num_days_late - $settings['overduegracedays']) /
                                      ($settings['overduemaximumdays'] - $settings['overduegracedays']);
                 $days_late_weighting = max(0, min(1, $days_late_weighting));
@@ -458,9 +458,9 @@ class assessment_risk_calculator {
                     $mr = intval($settings['overduesubmittedweighting'] * 100);
                     $reason->logic = "0% risk before grace period ($gp days) ... $mr% risk after max days ($md).";
                 } else if ($a->due > time()) {
-					// Assessment not due yet
-					$timedue = date("d-m-Y H:i", $a->due);
-					$reason->submitted = "Not due yet; due $timedue";
+                    // Assessment not due yet
+                    $timedue = date("d-m-Y H:i", $a->due);
+                    $reason->submitted = "Not due yet; due $timedue";
                     $local_risk = 0;
                     $risk_contribution = 0;
                     $risk += $risk_contribution;
@@ -468,7 +468,7 @@ class assessment_risk_calculator {
                     $reason->localrisk = number_format($local_risk*100, 1).'%';
                     $mr = intval($settings['overduesubmittedweighting'] * 100);
                     $reason->logic = "0% risk before grace period ($gp days) ... $mr% risk after max days ($md).";
-				} else {
+                } else {
                     $reason->submitted = "not submitted.";
                     $local_risk = $days_late_weighting * $settings['overduenotsubmittedweighting'];
                     $risk_contribution = $assessment_value_weighting * $local_risk;

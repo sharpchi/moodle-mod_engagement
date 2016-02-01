@@ -25,11 +25,11 @@
 function xmldb_engagementindicator_assessment_upgrade($oldversion) {
     global $CFG, $DB;
 
-	// Populate DB with default snippets if necessary
-	if ($oldversion < 2016012916) {
-		require_once(dirname(__FILE__).'/../../../locallib.php');
-		engagementindicator_populate_snippets_from_lang('assessment');
-	}
-	
+    // Populate DB with default snippets if necessary
+    if ($oldversion < 2016012916) {
+        require_once(dirname(__FILE__).'/../../../locallib.php');
+        engagementindicator_populate_snippets_from_lang('assessment');
+    }
+    
     return true;
 }

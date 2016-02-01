@@ -36,7 +36,7 @@ function engagementindicator_login_process_edit_form($data) {
     $elements = array('loginspastweek' => 1, 'loginsperweek' => 1, 'avgsessionlength' => 60, 'timesincelast' => 86400); // user to set some settings as days, minutes; save all as seconds
     foreach ($elements as $element => $multiplier) {
         if (isset($data->{"login_e_$element"})) {
-			$configdata["login_e_$element"] = $data->{"login_e_$element"} * $multiplier;
+            $configdata["login_e_$element"] = $data->{"login_e_$element"} * $multiplier;
         }
         if (isset($data->{"login_w_$element"})) {
             $configdata["login_w_$element"] = $data->{"login_w_$element"};
@@ -57,14 +57,14 @@ function engagementindicator_login_process_edit_form($data) {
  * @return array
  */
 function engagementindicator_login_preprocess_configdata_for_edit_form($configdata) {
-	
-	$elements = array('loginspastweek' => 1, 'loginsperweek' => 1, 'avgsessionlength' => 60, 'timesincelast' => 86400); // user to set some settings as days, minutes; save all as seconds
-	foreach ($configdata as $setting => $value) {
-		if (strpos($setting, 'login_e_') !== FALSE) {
-			$configdata[$setting] = $value / $elements[substr($setting, 8)];
-		} else if ($setting == 'login_session_length') {
-			$configdata[$setting] = $value / 60;
-		}
-	}
-	return $configdata;
+    
+    $elements = array('loginspastweek' => 1, 'loginsperweek' => 1, 'avgsessionlength' => 60, 'timesincelast' => 86400); // user to set some settings as days, minutes; save all as seconds
+    foreach ($configdata as $setting => $value) {
+        if (strpos($setting, 'login_e_') !== FALSE) {
+            $configdata[$setting] = $value / $elements[substr($setting, 8)];
+        } else if ($setting == 'login_session_length') {
+            $configdata[$setting] = $value / 60;
+        }
+    }
+    return $configdata;
 }

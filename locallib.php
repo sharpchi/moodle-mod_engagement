@@ -31,34 +31,34 @@ defined('MOODLE_INTERNAL') || die();
  * @return boolean Success
  */
 function engagementindicator_populate_snippets_from_lang($category) {
-	
-	global $DB;
+    
+    global $DB;
     $dbman = $DB->get_manager();
-	$stringman = get_string_manager();
-	
-	if ($dbman->table_exists('report_engagement_snippets')) {
-		if (!$DB->count_records('report_engagement_snippets', array('category'=>$category))) {
-			// Add default snippets
-			$records = [];
-			$counter = 0;
-			try {
-				// Incrementally check and fetch default snippets from lang file
-				do {
-					$record = new stdClass;
-					if ($stringman->string_exists("defaultsnippet$counter", "engagementindicator_$category")) {
-						$record->category = $category;
-						$record->snippet_text = get_string("defaultsnippet$counter", "engagementindicator_$category");
-						$counter += 1;
-						$records[] = $record;
-					} else {
-						break;
-					}
-				} while (true);
-				$DB->insert_records('report_engagement_snippets', $records);
-			} catch (Exception $e) {
-				break;
-			}
-		}
-	}
+    $stringman = get_string_manager();
+    
+    if ($dbman->table_exists('report_engagement_snippets')) {
+        if (!$DB->count_records('report_engagement_snippets', array('category'=>$category))) {
+            // Add default snippets
+            $records = [];
+            $counter = 0;
+            try {
+                // Incrementally check and fetch default snippets from lang file
+                do {
+                    $record = new stdClass;
+                    if ($stringman->string_exists("defaultsnippet$counter", "engagementindicator_$category")) {
+                        $record->category = $category;
+                        $record->snippet_text = get_string("defaultsnippet$counter", "engagementindicator_$category");
+                        $counter += 1;
+                        $records[] = $record;
+                    } else {
+                        break;
+                    }
+                } while (true);
+                $DB->insert_records('report_engagement_snippets', $records);
+            } catch (Exception $e) {
+                break;
+            }
+        }
+    }
 }
 

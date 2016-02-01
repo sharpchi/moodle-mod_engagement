@@ -33,15 +33,15 @@ defined('MOODLE_INTERNAL') || die();
  */
 function engagementindicator_gradebook_process_edit_form($data) {
     $configdata = array();
-	
-	$elements = ['gradeitem_enabled', 'gradeitem_comparator', 'gradeitem_value', 'gradeitem_weighting'];
-	foreach ($elements as $element) {
-		foreach ($data as $key => $value) {
-			if (substr($key, 0, strlen($element)) === $element) {
-				$configdata[$key] = $value;
-			}
-		}
-	}
-	
+    
+    $elements = ['gradeitem_enabled', 'gradeitem_comparator', 'gradeitem_value', 'gradeitem_weighting'];
+    foreach ($elements as $element) {
+        foreach ($data as $key => $value) {
+            if (substr($key, 0, strlen($element)) === $element) {
+                $configdata[$key] = $value;
+            }
+        }
+    }
+    
     return $configdata;
 }
