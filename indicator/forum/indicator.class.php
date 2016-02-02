@@ -81,74 +81,47 @@ class indicator_forum extends indicator {
             $postrecs->close();
         }
 
-        // Fetch data from forum_read table first.
-        $sql = "SELECT *
-                  FROM {forum_read} fr
-                  JOIN {forum} f ON (f.id = fr.forumid)
-                 WHERE f.course = :courseid
-                   AND fr.firstread > :startdate 
-                   AND fr.firstread < :enddate";
+        // Set up some general params.
         $params['courseid'] = $this->courseid;
         $params['startdate'] = $startdate;
         $params['enddate'] = $enddate;
-        $readposts = $DB->get_recordset_sql($sql, $params);
-        // Determine (1) if just counting uniques or all views, and (2) if forum_read data are available.
-        $uselogs = false;
-        $uselogsunique = false;
-        if ($this->config['read_count_method'] == 'all') {
-            // Counting all views so ignore forum_read data regardless of whether or not there are any.
-            $uselogs = true;
-            $uselogsunique = false;
-        } else if ($this->config['read_count_method'] == 'unique' && $readposts->valid()) {
-            // Just counting uniques, and forum_read has data.
-            $uselogs = false;
-        } else if ($this->config['read_count_method'] == 'unique' && !$readposts->valid()) {
-            // Need to count uniques, but forum_read doesn't have data.
-            $uselogs = true;
-            $uselogsunique = true;
-        }
-        // Now that the logic has been decided, fetch data as necessary.
-        if ($uselogs) {
-            // Set sql for selecting unique views/reads.
-            $sqlunique = '';
-            if ($uselogsunique) {
-                $sqlunique = ' GROUP BY objectid ';
+        // Get sql for different log readers.
+        $sql = array();
+        $logmanager = get_log_manager();
+        $readers = $logmanager->get_readers(); 
+        foreach ($readers as $reader) {
+            if ($reader instanceof \logstore_legacy\log\store) {
+                $sql['legacy'] = "SELECT id, userid, time, course, CAST(info AS char(64)) AS objectid
+                                    FROM {log}
+                                   WHERE module = 'forum'
+                                     AND action = 'view discussion'";
+            } else if ($reader instanceof \logstore_standard\log\store) {
+                $sql['standard'] = "SELECT id, userid, timecreated AS time, courseid AS course, CAST(objectid AS char(64)) AS objectid
+                                      FROM {logstore_standard_log}
+                                     WHERE target = 'discussion'
+                                       AND action = 'viewed'";
             }
-            // Set the sql based on log reader(s) available.
-            $sql = array();
-            $logmanager = get_log_manager();
-            $readers = $logmanager->get_readers(); 
-            foreach ($readers as $reader) {
-                if ($reader instanceof \logstore_legacy\log\store) {
-                    $sql['legacy'] = "SELECT id, userid, time, course, info as objectid
-                                        FROM {log}
-                                       WHERE module = 'forum'
-                                         AND action = 'view discussion'
-                                         $sqlunique";
-                } else if ($reader instanceof \logstore_standard\log\store) {
-                    $sql['standard'] = "SELECT id, userid, timecreated AS time, courseid AS course, objectid
-                                          FROM {logstore_standard_log}
-                                         WHERE target = 'discussion'
-                                           AND action = 'viewed'
-                                           $sqlunique";
-                }
-            }
-            $querysql = "SELECT  c.id, c.userid, c.objectid
-                           FROM (" . implode(' UNION ', $sql) . ") c
-                          WHERE c.course = :courseid
-                            AND c.time >= :startdate
-                            AND c.time <= :enddate";
-            // Read logs.
-            $readposts = $DB->get_recordset_sql($querysql, $params);
-        } else {
-            // Continue - $readposts should already have the required data.
         }
+        // Read from log.
+        $querysql = "SELECT CONCAT(c.userid, '_', c.objectid) AS user_objectid, COUNT(*) AS countnumber
+                       FROM (" . implode(' UNION ', $sql) . ") c
+                      WHERE c.course = :courseid
+                        AND c.time >= :startdate
+                        AND c.time <= :enddate
+                   GROUP BY user_objectid";
+        $readposts = $DB->get_recordset_sql($querysql, $params);
+        // Different calculation methods depending on whether counting all or unique discussion views.
         if ($readposts) {
             foreach ($readposts as $read) {
-                if (!isset($posts[$read->userid])) {
-                    $posts[$read->userid]['read'] = 0;
+                $parseduserid = explode('_', $read->user_objectid)[0];
+                if (!isset($posts[$parseduserid])) {
+                    $posts[$parseduserid]['read'] = 0;
                 }
-                $posts[$read->userid]['read']++;
+                if ($this->config['read_count_method'] == 'unique') {
+                    $posts[$parseduserid]['read']++;
+                } else {
+                    $posts[$parseduserid]['read'] += $read->countnumber;
+                }
             }
             $readposts->close();
         }
