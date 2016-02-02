@@ -83,7 +83,7 @@ class engagementindicator_gradebook_thresholds_form {
                         $gradeitemrowlabel . $gradeitemhint, 
                         get_string('gradeitem_enabled', 'engagementindicator_gradebook', $gradeitemrowlabel), 
                         array('data-gradeitem_id' => $gradeitem->id,
-                                          'group' => 'group_gradeitem_'.$gradeitem->id));
+                            'group' => 'group_gradeitem_'.$gradeitem->id));
                     $mform->addHelpButton('gradeitem_enabled_'.$gradeitem->id, 
                         'group_gradeitem', 
                         'engagementindicator_gradebook');
