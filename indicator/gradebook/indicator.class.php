@@ -98,16 +98,18 @@ class indicator_gradebook extends indicator {
         }        
         // Determine which grade items are enabled.
         $gradeitems = array();
-        foreach ($this->config as $key => $value) {
-            if (substr($key, 0, strlen("gradeitem_enabled_")) === "gradeitem_enabled_") {
-                if ($value == 1) {
-                    $gradeitem = new stdClass();
-                    $gradeid = substr($key, strlen("gradeitem_enabled_"));
-                    $gradeitem->id = $gradeid;
-                    $gradeitem->comparator = $this->config["gradeitem_comparator_".$gradeid];
-                    $gradeitem->value = $this->config["gradeitem_value_".$gradeid];
-                    $gradeitem->weighting = $this->config["gradeitem_weighting_".$gradeid];
-                    $gradeitems[] = $gradeitem;
+        if ($this->config) {
+            foreach ($this->config as $key => $value) {
+                if (substr($key, 0, strlen("gradeitem_enabled_")) === "gradeitem_enabled_") {
+                    if ($value == 1) {
+                        $gradeitem = new stdClass();
+                        $gradeid = substr($key, strlen("gradeitem_enabled_"));
+                        $gradeitem->id = $gradeid;
+                        $gradeitem->comparator = $this->config["gradeitem_comparator_".$gradeid];
+                        $gradeitem->value = $this->config["gradeitem_value_".$gradeid];
+                        $gradeitem->weighting = $this->config["gradeitem_weighting_".$gradeid];
+                        $gradeitems[] = $gradeitem;
+                    }
                 }
             }
         }
