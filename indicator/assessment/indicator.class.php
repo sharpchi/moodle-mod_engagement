@@ -331,22 +331,24 @@ class indicator_assessment extends indicator {
         }
         
         // Collect and process data
-        foreach ($this->rawdata->assessments as $assessment) {
-            foreach ($this->userarray as $userid) {
-                $submittime = isset($assessment->submissions[$userid]['submitted']) ? $assessment->submissions[$userid]['submitted'] : PHP_INT_MAX;
-                $timedue = isset($assessment->submissions[$userid]['due']) ? $assessment->submissions[$userid]['due'] : 1;
-                $interval = $submittime - $timedue;
-                if (isset($assessment->submissions[$userid]['submitted'])) {
-                    $data[$userid]['numbersubmissions'] += 1;
-                    if ($interval > 0) {
-                        $data[$userid]['numberoverduesubmitted'] += 1;
-                        $data[$userid]['totallateinterval'] += $interval;
+        if (isset($this->rawdata->assessments)) {
+            foreach ($this->rawdata->assessments as $assessment) {
+                foreach ($this->userarray as $userid) {
+                    $submittime = isset($assessment->submissions[$userid]['submitted']) ? $assessment->submissions[$userid]['submitted'] : PHP_INT_MAX;
+                    $timedue = isset($assessment->submissions[$userid]['due']) ? $assessment->submissions[$userid]['due'] : 1;
+                    $interval = $submittime - $timedue;
+                    if (isset($assessment->submissions[$userid]['submitted'])) {
+                        $data[$userid]['numbersubmissions'] += 1;
+                        if ($interval > 0) {
+                            $data[$userid]['numberoverduesubmitted'] += 1;
+                            $data[$userid]['totallateinterval'] += $interval;
+                        }
+                    } else if ($assessment->due > time()) {
+                        // Not due yet
+                    } else {
+                        $data[$userid]['numberoverduenotsubmitted'] += 1;
+                        $data[$userid]['overdueassessments'][] = $assessment->description;
                     }
-                } else if ($assessment->due > time()) {
-                    // Not due yet
-                } else {
-                    $data[$userid]['numberoverduenotsubmitted'] += 1;
-                    $data[$userid]['overdueassessments'][] = $assessment->description;
                 }
             }
         }
