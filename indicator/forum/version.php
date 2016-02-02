@@ -27,6 +27,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2016012915;
+$plugin->version  = 2016020202;
 $plugin->requires = 2010112400;  // Requires this Moodle version.
 $plugin->component = 'engagementindicator_forum';

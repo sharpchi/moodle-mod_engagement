@@ -18,8 +18,8 @@
  * This file defines a class with forum indicator logic
  *
  * @package    engagementindicator_forum
- * @author     Adam Olley <adam.olley@netspot.com.au>
- * @copyright  2012 NetSpot Pty Ltd
+ * @author     Adam Olley <adam.olley@netspot.com.au>, Danny Liu <danny.liu@mq.edu.au>
+ * @copyright  2012 NetSpot Pty Ltd, 2016 Macquarie University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -67,5 +67,14 @@ class engagementindicator_forum_thresholds_form {
                 false);
             $mform->addHelpButton("group_forum_$element", "e_$element", 'engagementindicator_forum');
         }
+        
+        $mform->addElement('select',
+            'forum_read_count_method',
+            get_string('forum_read_count_method_all', 'engagementindicator_forum'),
+            array('all' => get_string('forum_read_count_method_all', 'engagementindicator_forum'),
+                  'unique' => get_string('forum_read_count_method_unique', 'engagementindicator_forum')));
+        $mform->setDefault('forum_read_count_method', $defaults['read_count_method']);
+        $mform->addHelpButton('forum_read_count_method', 'forum_read_count_method', 'engagementindicator_forum');
+
     }
 }

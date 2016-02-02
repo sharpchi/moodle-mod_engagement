@@ -18,7 +18,7 @@
  * This file defines a class with forum indicator logic
  *
  * @package    engagementindicator_forum
- * @copyright  2012 NetSpot Pty Ltd
+ * @copyright  2012 NetSpot Pty Ltd, 2015-2016 Macquarie University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -80,38 +80,68 @@ class indicator_forum extends indicator {
             }
             $postrecs->close();
         }
-        
-        // Try fetching from forum_read table first
+
+        // Fetch data from forum_read table first.
         $sql = "SELECT *
-                FROM {forum_read} fr
-                JOIN {forum} f ON (f.id = fr.forumid)
-                WHERE f.course = :courseid
-                    AND fr.firstread > :startdate AND fr.firstread < :enddate";
+                  FROM {forum_read} fr
+                  JOIN {forum} f ON (f.id = fr.forumid)
+                 WHERE f.course = :courseid
+                   AND fr.firstread > :startdate 
+                   AND fr.firstread < :enddate";
         $params['courseid'] = $this->courseid;
         $params['startdate'] = $startdate;
         $params['enddate'] = $enddate;
         $readposts = $DB->get_recordset_sql($sql, $params);
-        // Check if there is any data in forum_read table
-        if (!$readposts->valid()) {
-            // If not, fetch data from logs
-            // set the sql based on log reader(s) available
+        // Determine (1) if just counting uniques or all views, and (2) if forum_read data are available.
+        $uselogs = false;
+        $uselogsunique = false;
+        if ($this->config['read_count_method'] == 'all') {
+            // Counting all views so ignore forum_read data regardless of whether or not there are any.
+            $uselogs = true;
+            $uselogsunique = false;
+        } else if ($this->config['read_count_method'] == 'unique' && $readposts->valid()) {
+            // Just counting uniques, and forum_read has data.
+            $uselogs = false;
+        } else if ($this->config['read_count_method'] == 'unique' && !$readposts->valid()) {
+            // Need to count uniques, but forum_read doesn't have data.
+            $uselogs = true;
+            $uselogsunique = true;
+        }
+        // Now that the logic has been decided, fetch data as necessary.
+        if ($uselogs) {
+            // Set sql for selecting unique views/reads.
+            $sqlunique = '';
+            if ($uselogsunique) {
+                $sqlunique = ' GROUP BY objectid ';
+            }
+            // Set the sql based on log reader(s) available.
             $sql = array();
             $logmanager = get_log_manager();
             $readers = $logmanager->get_readers(); 
             foreach ($readers as $reader) {
                 if ($reader instanceof \logstore_legacy\log\store) {
-                    $sql['legacy'] = "SELECT id, userid, time, course
+                    $sql['legacy'] = "SELECT id, userid, time, course, info as objectid
                                         FROM {log}
-                                        WHERE module = 'forum' AND action = 'view discussion'";
+                                       WHERE module = 'forum'
+                                         AND action = 'view discussion'
+                                         $sqlunique";
                 } else if ($reader instanceof \logstore_standard\log\store) {
-                    $sql['standard'] = "SELECT id, userid, timecreated AS time, courseid AS course
-                                        FROM {logstore_standard_log}
-                                        WHERE target = 'discussion' AND action = 'viewed'";
+                    $sql['standard'] = "SELECT id, userid, timecreated AS time, courseid AS course, objectid
+                                          FROM {logstore_standard_log}
+                                         WHERE target = 'discussion'
+                                           AND action = 'viewed'
+                                           $sqlunique";
                 }
             }
-            $querysql = 'SELECT c.id, c.userid FROM (' . implode(' UNION ', $sql) . ') c WHERE c.course = :courseid AND c.time >= :startdate AND c.time <= :enddate';
-            // read logs
+            $querysql = "SELECT  c.id, c.userid, c.objectid
+                           FROM (" . implode(' UNION ', $sql) . ") c
+                          WHERE c.course = :courseid
+                            AND c.time >= :startdate
+                            AND c.time <= :enddate";
+            // Read logs.
             $readposts = $DB->get_recordset_sql($querysql, $params);
+        } else {
+            // Continue - $readposts should already have the required data.
         }
         if ($readposts) {
             foreach ($readposts as $read) {
@@ -256,6 +286,8 @@ class indicator_forum extends indicator {
                 $this->config[$setting] = $value;
             } else if (substr($setting, 0, 2) == 'w_') {
                 $this->config[$setting] = $this->config[$setting] / 100;
+            } else {
+                $this->config[$setting] = $this->config[$setting];
             }
         }
     }
@@ -276,6 +308,9 @@ class indicator_forum extends indicator {
         $settings['max_replies'] = 0;
         $settings['max_newposts'] = 0;
         $settings['max_readposts'] = 0;
+        
+        $settings['read_count_method'] = 'all';
+        
         return $settings;
     }
     

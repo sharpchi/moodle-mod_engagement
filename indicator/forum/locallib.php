@@ -46,5 +46,7 @@ function engagementindicator_forum_process_edit_form($data) {
         }
     }
 
+    $configdata['forum_read_count_method'] = $data->forum_read_count_method;
+
     return $configdata;
 }
