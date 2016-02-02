@@ -38,9 +38,22 @@ $string['weightingsumonehundred'] = "Weightings for Gradebook indicator must sum
 
 // Renderer.
 $string['localrisk'] = 'Local Risk';
+$string['localrisk_help'] = 'The risk percentage of this gradebook item alone, out
+of 100. The local risk is multiplied by the weighting for this item to form the
+Risk Contribution.';
 $string['logic'] = 'Logic';
+$string['logic_help'] = 'This field provides some insight into the logic used
+to arrive at the Local Risk value.';
 $string['riskcontribution'] = 'Risk Contribution';
+$string['riskcontribution_help'] = 'The amount of risk this particular gradebook item
+contributes to the overall risk returned for the Gradebook indicator.
+This is formed by multiplying the Local Risk with the Weighting.
+The Risk Contributions of each gradebook item are summed together to form the overall
+risk for the indicator.';
 $string['weighting'] = 'Weighting';
+$string['weighting_help'] = 'This figure shows the amount this item contributes towards 
+the overall risk for the Gradebook indicator. The local risk will be multiplied by this to 
+form the risk contribution.';
 $string['gradeitemvalue'] = 'Grade item value ';
 $string['soatrisk'] = ' so at risk';
 $string['sonotatrisk'] = ' so not at risk';
