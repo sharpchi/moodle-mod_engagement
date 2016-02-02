@@ -70,7 +70,7 @@ class engagementindicator_forum_thresholds_form {
         
         $mform->addElement('select',
             'forum_read_count_method',
-            get_string('forum_read_count_method_all', 'engagementindicator_forum'),
+            get_string('forum_read_count_method', 'engagementindicator_forum'),
             array('all' => get_string('forum_read_count_method_all', 'engagementindicator_forum'),
                   'unique' => get_string('forum_read_count_method_unique', 'engagementindicator_forum')));
         $mform->setDefault('forum_read_count_method', $defaults['read_count_method']);
