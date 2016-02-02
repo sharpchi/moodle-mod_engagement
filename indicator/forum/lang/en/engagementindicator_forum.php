@@ -66,7 +66,8 @@ contribution.';
 
 // Mailer report.
 $string['report_forum_risk'] = 'Forum risk';
-$string['report_readposts'] = 'Posts read';
+$string['report_discussionsread'] = 'Discussions read';
+$string['report_discussionsreadunique'] = 'Unique discussions read';
 $string['report_posted'] = 'Posted';
 $string['mailer_checkbox_column_header'] = 'Forum'; // Keep this short
 $string['mailer_checkbox_column_header_help'] = 'Tick the checkbox(es) in this column to send messages to student(s) based on their forum activity. Their forum metrics are outlined in columns to the right.';

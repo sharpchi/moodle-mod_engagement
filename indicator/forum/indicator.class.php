@@ -321,7 +321,11 @@ class indicator_forum extends indicator {
         $returncolumns[] = $returncolumn;
         // Column for read posts.
         $returncolumn = array();
-        $returncolumn['header'] = get_string('report_readposts', 'engagementindicator_forum');
+        if ($this->config['read_count_method'] == 'unique') {
+            $returncolumn['header'] = get_string('report_discussionsreadunique', 'engagementindicator_forum');
+        } else if ($this->config['read_count_method'] == 'all') {
+            $returncolumn['header'] = get_string('report_discussionsread', 'engagementindicator_forum');
+        }
         $returncolumn['heatmapdirection'] = -1; // -1 means reverse sort, i.e. higher numbers are lighter.
         $returncolumn['display'] = array();
         foreach ($data as $userid => $record) {
