@@ -140,8 +140,9 @@ class indicator_forum extends indicator {
         $strnewposts = get_string('e_newposts', 'engagementindicator_forum');
         $strmaxrisktitle = get_string('maxrisktitle', 'engagementindicator_forum');
 
-        $startweek = date('W', $this->startdate);
-        $this->currweek = date('W') - $startweek + 1;
+        // Calculate weeks properly based on startdate and enddate.
+        $this->currweek = ($this->enddate - $this->startdate) / (60 * 60 * 24 * 7);
+        
         foreach ($userids as $userid) {
             $risk = 0;
             $reasons = array();
