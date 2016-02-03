@@ -118,7 +118,7 @@ class indicator_assessment extends indicator {
                                            JOIN {turnitintool_parts} b ON (e.turnitintoolid = b.turnitintoolid)
                                            JOIN {turnitintool} a ON (a.id = e.turnitintoolid) 
                                           WHERE e.turnitintoolid $insql 
-                                            AND e.submission_status = 'Submission successfully uploaded to Turnitin.'", $params);
+                                            AND e.submission_objectid IS NOT NULL", $params);
 
         foreach ($tiisubs as $s) {
             $submissions[$s->turnitintoolid][$s->userid]['submitted'] = $s->submission_modified;
