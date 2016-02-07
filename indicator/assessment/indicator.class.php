@@ -19,7 +19,7 @@
  *
  * @package    engagementindicator_assessment
  * @author     Ashley Holman <ashley.holman@netspot.com.au>
- * @copyright  2012 NetSpot Pty Ltd
+ * @copyright  2012 NetSpot Pty Ltd, 2015-2016 Macquarie University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -313,6 +313,34 @@ class indicator_assessment extends indicator {
         $settings['overduenotsubmittedweighting'] = 1.0;
 
         return $settings;
+    }
+    
+    public function get_helper_initial_settings(){
+        $settings = array();
+        
+        $settings['overduegracedays'] = ['start' => 0.5, 'min' => 0.0, 'max' => 14.0];
+        $settings['overduemaximumdays'] = ['start' => 7.0, 'min' => 0.0, 'max' => 28.0];
+
+        $settings['overduesubmittedweighting'] = ['start' => 50, 'min' => 0, 'max' => 80];
+        $settings['overduenotsubmittedweighting'] = ['start' => 100, 'min' => 0, 'max' => 100];
+        
+        return $settings;
+    }
+    
+    public function transform_helper_discovered_settings($discoveredsettings) {
+        $settings = $this->get_defaults();
+        $transformedsettings = array();
+
+        foreach ($settings as $key => $setting) {
+            if (array_key_exists($key, $discoveredsettings)) {
+                $transformedsettings["assessment_$key"] = round($discoveredsettings[$key], 2);
+            } else {
+                $transformedsettings["assessment_$key"] = $setting;
+            }
+        }
+        
+        return $transformedsettings;
+        
     }
     
     public function get_data_for_mailer() {

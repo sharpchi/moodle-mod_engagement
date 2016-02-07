@@ -18,7 +18,7 @@
  * This file defines a class with login indicator logic
  *
  * @package    engagementindicator_login
- * @copyright  2012 NetSpot Pty Ltd
+ * @copyright  2012 NetSpot Pty Ltd, 2015-2016 Macquarie University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -239,6 +239,56 @@ class indicator_login extends indicator {
 
         $settings['session_length'] = 60; // 60 minutes
         return $settings;
+    }
+    
+    public function get_helper_initial_settings(){
+        $settings = array();
+        
+        //$settings['e_loginspastweek'] = ['start' => 4];
+        //$settings['w_loginspastweek'] = ['start' => 20];
+
+        $settings['e_loginsperweek'] = ['start' => 3, 'min' => 0, 'max' => 50];
+        $settings['w_loginsperweek'] = ['start' => 30, 'min' => 0, 'max' => 100];
+
+        $settings['e_avgsessionlength'] = ['start' => 10 * 60, 'min' => 0, 'max' => 12 * 60 * 60]; // In seconds.
+        $settings['w_avgsessionlength'] = ['start' => 10, 'min' => 0, 'max' => 100];
+
+        $settings['e_timesincelast'] = ['start' => 7 * 24 * 60 * 60, 'min' => 0, 'max' => 14 * 24 * 60 * 60]; // In seconds.
+        $settings['w_timesincelast'] = ['start' => 40, 'min' => 0, 'max' => 100];
+        
+        return $settings;
+    }
+    
+    public function transform_helper_discovered_settings($discoveredsettings) {
+        $settings = $this->get_defaults();
+        
+        $warray = array();
+        $earray = array();
+        $others = array();
+        
+        foreach ($settings as $key => $setting) {
+            if (substr($key, 0, 2) == 'w_') {
+                $warray["login_$key"] = $discoveredsettings[$key];
+            } else if (substr($key, 0, 2) == 'e_') {
+                $earray["login_$key"] = $discoveredsettings[$key];
+            } else {
+                $others["login_$key"] = $setting;
+            }
+        }
+        
+        // Normalise weightings.
+        $sumweight = array_sum($warray);
+        foreach ($warray as $key => $value) {
+            $warray[$key] = round(($value / $sumweight) * 100.0, 0);
+        }
+        
+        // Prettify/round numbers.
+        foreach ($earray as $key => $value) {
+            $earray[$key] = round($value, 2);
+        }
+        
+        return array_merge($earray, $warray, $others);
+        
     }
     
     public function get_data_for_mailer() {

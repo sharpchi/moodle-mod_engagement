@@ -288,6 +288,53 @@ class indicator_forum extends indicator {
         return $settings;
     }
     
+    public function get_helper_initial_settings(){
+        $settings = array();
+        
+        $settings['no_totalposts'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        $settings['w_totalposts'] = ['start' => 50, 'min' => 0, 'max' => 100];
+        $settings['no_replies'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        $settings['w_replies'] = ['start' => 50, 'min' => 0, 'max' => 100];
+        $settings['no_newposts'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        $settings['w_newposts'] = ['start' => 50, 'min' => 0, 'max' => 100];
+        $settings['no_readposts'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        $settings['w_readposts'] = ['start' => 50, 'min' => 0, 'max' => 100];
+        
+        return $settings;
+    }
+    
+    public function transform_helper_discovered_settings($discoveredsettings) {
+        $settings = $this->get_defaults();
+        
+        $warray = array();
+        $noarray = array();
+        $others = array();
+        
+        foreach ($settings as $key => $setting) {
+            if (substr($key, 0, 2) == 'w_') {
+                $warray["forum_$key"] = $discoveredsettings[$key];
+            } else if (substr($key, 0, 3) == 'no_') {
+                $noarray["forum_$key"] = $discoveredsettings[$key];
+            } else {
+                $others["forum_$key"] = $setting;
+            }
+        }
+        
+        // Normalise weightings.
+        $sumweight = array_sum($warray);
+        foreach ($warray as $key => $value) {
+            $warray[$key] = round(($value / $sumweight) * 100.0, 0);
+        }
+        
+        // Prettify/round numbers.
+        foreach ($noarray as $key => $value) {
+            $noarray[$key] = round($value, 2);
+        }
+        
+        return array_merge($noarray, $warray, $others);
+        
+    }
+
     public function get_data_for_mailer() {
         
         $risks = $this->get_course_risks();
