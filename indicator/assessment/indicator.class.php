@@ -325,7 +325,7 @@ class indicator_assessment extends indicator {
         return $settings;
     }
     
-    public function get_helper_initial_settings(){
+    public function get_helper_initial_settings() {
         $settings = array();
         
         $settings['overduegracedays'] = ['start' => 0.5, 'min' => 0.0, 'max' => 14.0];

@@ -244,8 +244,8 @@ class indicator_login extends indicator {
     public function get_helper_initial_settings(){
         $settings = array();
         
-        //$settings['e_loginspastweek'] = ['start' => 4];
-        //$settings['w_loginspastweek'] = ['start' => 20];
+        $settings['e_loginspastweek'] = ['start' => 4, 'min' => 0, 'max' => 50];
+        $settings['w_loginspastweek'] = ['start' => 20, 'min' => 0, 'max' => 100];
 
         $settings['e_loginsperweek'] = ['start' => 3, 'min' => 0, 'max' => 50];
         $settings['w_loginsperweek'] = ['start' => 30, 'min' => 0, 'max' => 100];
@@ -255,6 +255,8 @@ class indicator_login extends indicator {
 
         $settings['e_timesincelast'] = ['start' => 7 * 24 * 60 * 60, 'min' => 0, 'max' => 14 * 24 * 60 * 60]; // In seconds.
         $settings['w_timesincelast'] = ['start' => 40, 'min' => 0, 'max' => 100];
+
+        $settings['session_length'] = ['start' => 3600, 'min' => 600, 'max' => 14400];
         
         return $settings;
     }
@@ -271,6 +273,8 @@ class indicator_login extends indicator {
                 $warray["login_$key"] = $discoveredsettings[$key];
             } else if (substr($key, 0, 2) == 'e_') {
                 $earray["login_$key"] = $discoveredsettings[$key];
+            } else if ($key == 'session_length') {
+                $others[$key] = $setting * 60;
             } else {
                 $others["login_$key"] = $setting;
             }
