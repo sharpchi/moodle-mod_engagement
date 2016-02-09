@@ -42,10 +42,12 @@ class indicator_assessment extends indicator {
      * @access protected
      * @return array            array of risk values, keyed on userid
      */
-    protected function get_rawdata($ignoredstartdate, $ignoredenddate) {
+    protected function get_rawdata($startdate, $enddate) {
         global $DB;
 
         $this->calculator = new assessment_risk_calculator;
+        $this->startdate = $startdate;
+        $this->enddate = $enddate;
 
         $rawdata = new stdClass();
 
@@ -111,6 +113,7 @@ class indicator_assessment extends indicator {
                                                   JOIN {turnitintool} a ON (a.id = b.turnitintoolid) 
                                                  WHERE b.turnitintoolid $insql", $params);
 
+        
         // Collect up the turnitin submissions.
         $tiisubs = $DB->get_records_sql("SELECT e.id, e.userid, e.turnitintoolid, 
                                                 e.submission_modified, b.dtdue 
@@ -119,9 +122,10 @@ class indicator_assessment extends indicator {
                                            JOIN {turnitintool} a ON (a.id = e.turnitintoolid) 
                                           WHERE e.turnitintoolid $insql 
                                             AND e.submission_objectid IS NOT NULL", $params);
-
         foreach ($tiisubs as $s) {
-            $submissions[$s->turnitintoolid][$s->userid]['submitted'] = $s->submission_modified;
+            if ($s->submission_modified >= $this->startdate && $s->submission_modified <= $this->enddate) {
+                $submissions[$s->turnitintoolid][$s->userid]['submitted'] = $s->submission_modified;
+            }
             $submissions[$s->turnitintoolid][$s->userid]['due'] = $s->dtdue;
         }
         // Finally add the assessment details into the calculator.
@@ -157,7 +161,9 @@ class indicator_assessment extends indicator {
             AND         sub.status = 'submitted'
         ", $params);
         foreach ($subs as $s) {
-            $submissions[$s->assignment][$s->userid]['submitted'] = $s->timemodified;
+            if ($s->timemodified >= $this->startdate && $s->timemodified <= $this->enddate) {
+                $submissions[$s->assignment][$s->userid]['submitted'] = $s->timemodified;
+            }
             $submissions[$s->assignment][$s->userid]['due'] = $s->duedate;
         }
         // Finally add the assessment details into the calculator.
@@ -193,7 +199,9 @@ class indicator_assessment extends indicator {
                           OR (assignmenttype IN ('uploadsingle', 'online')))
         ", $params);
         foreach ($subs as $s) {
-            $submissions[$s->assignment][$s->userid]['submitted'] = $s->timemodified;
+            if ($s->timemodified >= $this->startdate && $s->timemodified <= $this->enddate) {
+                $submissions[$s->assignment][$s->userid]['submitted'] = $s->timemodified;
+            }
             $submissions[$s->assignment][$s->userid]['due'] = $s->timedue;
         }
         // Finally add the assessment details into the calculator.
@@ -276,7 +284,9 @@ class indicator_assessment extends indicator {
             }
         }
         foreach ($attempts as $a) {
-            $submissions[$a->quiz][$a->userid]['submitted'] = $a->timefinish;
+            if ($a->timefinish >= $this->startdate && $a->timefinish <= $this->enddate) {
+                $submissions[$a->quiz][$a->userid]['submitted'] = $a->timefinish;
+            }
             if (!isset($submissions[$a->quiz][$a->userid]['due'])) {
                 // Only set timeclose if there wasn't an override in place.
                 $submissions[$a->quiz][$a->userid]['due'] = $a->timeclose;
