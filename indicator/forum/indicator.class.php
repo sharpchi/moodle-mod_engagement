@@ -291,13 +291,20 @@ class indicator_forum extends indicator {
     public function get_helper_initial_settings(){
         $settings = array();
         
-        $settings['no_totalposts'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        $settings['no_totalposts'] = ['start' => 2, 'min' => 0, 'max' => 100];
+        $settings['max_totalposts'] = ['start' => 2, 'min' => 0, 'max' => 25];
         $settings['w_totalposts'] = ['start' => 50, 'min' => 0, 'max' => 100];
-        $settings['no_replies'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        
+        $settings['no_replies'] = ['start' => 2, 'min' => 0, 'max' => 100];
+        $settings['max_replies'] = ['start' => 2, 'min' => 0, 'max' => 25];
         $settings['w_replies'] = ['start' => 50, 'min' => 0, 'max' => 100];
-        $settings['no_newposts'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        
+        $settings['no_newposts'] = ['start' => 2, 'min' => 0, 'max' => 100];
+        $settings['max_newposts'] = ['start' => 2, 'min' => 0, 'max' => 25];
         $settings['w_newposts'] = ['start' => 50, 'min' => 0, 'max' => 100];
-        $settings['no_readposts'] = ['start' => 2, 'min' => 0, 'max' => 50];
+        
+        $settings['no_readposts'] = ['start' => 2, 'min' => 0, 'max' => 100];
+        $settings['max_readposts'] = ['start' => 2, 'min' => 0, 'max' => 25];
         $settings['w_readposts'] = ['start' => 50, 'min' => 0, 'max' => 100];
         
         return $settings;
@@ -314,6 +321,8 @@ class indicator_forum extends indicator {
             if (substr($key, 0, 2) == 'w_') {
                 $warray["forum_$key"] = $discoveredsettings[$key];
             } else if (substr($key, 0, 3) == 'no_') {
+                $noarray["forum_$key"] = $discoveredsettings[$key];
+            } else if (substr($key, 0, 4) == 'max_') {
                 $noarray["forum_$key"] = $discoveredsettings[$key];
             } else {
                 $others["forum_$key"] = $setting;
