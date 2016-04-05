@@ -31,11 +31,11 @@ defined('MOODLE_INTERNAL') || die();
  * @return boolean Success
  */
 function engagementindicator_populate_snippets_from_lang($category) {
-    
+
     global $DB;
     $dbman = $DB->get_manager();
     $stringman = get_string_manager();
-    
+
     if ($dbman->table_exists('report_engagement_snippets')) {
         if (!$DB->count_records('report_engagement_snippets', array('category' => $category))) {
             // Add default snippets
@@ -56,9 +56,8 @@ function engagementindicator_populate_snippets_from_lang($category) {
                 } while (true);
                 $DB->insert_records('report_engagement_snippets', $records);
             } catch (Exception $e) {
-                break;
+                //break;
             }
         }
     }
 }
-
